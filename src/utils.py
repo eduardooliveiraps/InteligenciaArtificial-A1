@@ -1,3 +1,6 @@
+from collections import deque
+import pizza
+
 # Definition of the Client class that contaains the list of ingredients the client likes and dislikes
 class Client:
     def __init__(self, likes, dislikes):
@@ -35,3 +38,72 @@ def read_input_file(filename):
 def clear_data():
     clients.clear()
     unique_ingredients.clear()
+
+# Operators for the pizza problem
+def child_pizza_states(state):
+    new_states = []
+    for ingredient in unique_ingredients:
+        add_state = pizza.add_ingredient(state, ingredient)
+        if add_state:
+            new_states.append(add_state)
+        rem_state = pizza.remove_ingredient(state, ingredient)
+        if rem_state:
+            new_states.append(rem_state)
+    return new_states
+
+
+# Goal State Function
+def goal_pizza_state(state):
+    return pizza.objective_test(state, clients) == 2
+
+# Print the solution found
+def print_solution(node):
+    path = []
+    while node:
+        path.append(node.state)
+        node = node.parent
+    path.reverse()
+    for state in path:
+        print(state)
+    return
+
+
+# A generic definition of a tree node holding a state of the problem
+class TreeNode:
+    def __init__(self, state, parent=None):
+        self.state = state
+        self.parent = parent
+        self.children = []
+
+    def add_child(self, child_node):
+        self.children.append(child_node)
+        child_node.parent = self
+
+
+
+##############
+# ALGORITHMS #
+##############
+
+# Breadth First Search Algorithm
+def breadth_first_search(initial_state, goal_state_func, operators_func):
+    root = TreeNode(initial_state)   # create the root node in the search tree
+    queue = deque([root])   # initialize the queue to store the nodes
+    
+    while queue:
+        node = queue.popleft()   # get first element in the queue
+        if goal_state_func(node.state):   # check goal state
+            return node
+        
+        for state in operators_func(node.state):   # go through next states
+            # create tree node with the new state
+            child = TreeNode(state)
+            
+            # link child node to its parent in the tree
+            node.add_child(child)
+            
+            # enqueue the child node
+            queue.append(child)
+            
+
+    return None

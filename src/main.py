@@ -1,4 +1,5 @@
 import utils
+import pizza
 
 
 # List of possible algorithms
@@ -58,9 +59,19 @@ def main():
     
     utils.read_input_file(file_name)
     
-    algorithm_choice = select_algorithm()
+    #algorithm_choice = select_algorithm()
     
-    print(f"Running {algorithms[algorithm_choice]} algorithm...")
+    #print(f"Running {algorithms[algorithm_choice]} algorithm...")
+
     # Here we would call the selected algorithm function
+
+    # For now, we will just run the Breadth First Search algorithm
+    goal = utils.breadth_first_search(pizza.PizzaState(), 
+                           utils.goal_pizza_state, 
+                            utils.child_pizza_states)
+    
+    # Print the goal state and the solution
+    print(goal.state)
+    utils.print_solution(goal)
 
 main() 

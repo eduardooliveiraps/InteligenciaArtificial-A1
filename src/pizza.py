@@ -20,6 +20,10 @@ class PizzaState:
     def __hash__(self):
         return hash(tuple(sorted(self.ingredients)))
 
+    def __str__(self):
+        return str(sorted(self.ingredients))
+
+
 # Operator - Add Ingredient
 def add_ingredient(state, ingredient):
     if ingredient not in state.ingredients:
@@ -35,24 +39,9 @@ def remove_ingredient(state, ingredient):
 # Objective function for the pizza problem
 def objective_test(state, clients):
     satisfied_clients = 0
-    for client_likes, client_dislikes in clients:
-        if all(ingredient in state.ingredients for ingredient in client_likes) and \
-                not any(ingredient in state.ingredients for ingredient in client_dislikes):
+    for client in clients:
+        if all(ingredient in state.ingredients for ingredient in client.likes) and \
+                not any(ingredient in state.ingredients for ingredient in client.dislikes):
             satisfied_clients += 1
     return satisfied_clients
-
-
-# Operators for the pizza problem
-def child_pizza_states(state):
-    children = []
-    for ingredient in state.ingredients:
-        new_state = add_ingredient(state, ingredient)
-        if new_state:
-            children.append(new_state)
-    for ingredient in state.ingredients:
-        new_state = remove_ingredient(state, ingredient)
-        if new_state:
-            children.append(new_state)
-    return children
-
 
