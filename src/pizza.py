@@ -8,6 +8,11 @@ class PizzaState:
         new_ingredients = self.ingredients.copy()
         new_ingredients.add(ingredient)
         return PizzaState(new_ingredients)
+    
+    def rem_ing(self, ingredient):
+        new_ingredients = self.ingredients.copy()
+        new_ingredients.remove(ingredient)
+        return PizzaState(new_ingredients)
 
     def __eq__(self, other):
         return self.ingredients == other.ingredients
@@ -18,6 +23,11 @@ class PizzaState:
 def add_ingredient(state, ingredient):
     if ingredient not in state.ingredients:
         return state.add_ing(ingredient)
+    return None
+
+def remove_ingredient(state, ingredient):
+    if ingredient in state.ingredients:
+        return state.rem_ing(ingredient)
     return None
 
 def objective_test(state, clients):
@@ -41,6 +51,9 @@ clients = [
 
 # Add an ingredient to the state
 new_state = add_ingredient(initial_state, "cheese")
+new_state = add_ingredient(new_state, "peppers")
+new_state = add_ingredient(new_state, "basil")
+
 
 # Check objective test
 score = objective_test(new_state, clients)
