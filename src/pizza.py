@@ -20,16 +20,19 @@ class PizzaState:
     def __hash__(self):
         return hash(tuple(sorted(self.ingredients)))
 
+# Operator - Add Ingredient
 def add_ingredient(state, ingredient):
     if ingredient not in state.ingredients:
         return state.add_ing(ingredient)
     return None
 
+# Operator - Remove Ingredient
 def remove_ingredient(state, ingredient):
     if ingredient in state.ingredients:
         return state.rem_ing(ingredient)
     return None
 
+# Objective function for the pizza problem
 def objective_test(state, clients):
     satisfied_clients = 0
     for client_likes, client_dislikes in clients:
@@ -38,23 +41,18 @@ def objective_test(state, clients):
             satisfied_clients += 1
     return satisfied_clients
 
-# Usage:
-# Define initial state
-initial_state = PizzaState()
 
-# Define clients' preferences
-clients = [
-    (["cheese", "peppers"], []),
-    (["basil"], ["pineapple"]),
-    (["mushrooms", "tomatoes"], ["basil"])
-]
-
-# Add an ingredient to the state
-new_state = add_ingredient(initial_state, "cheese")
-new_state = add_ingredient(new_state, "peppers")
-new_state = add_ingredient(new_state, "basil")
+# Operators for the pizza problem
+def child_pizza_states(state):
+    children = []
+    for ingredient in state.ingredients:
+        new_state = add_ingredient(state, ingredient)
+        if new_state:
+            children.append(new_state)
+    for ingredient in state.ingredients:
+        new_state = remove_ingredient(state, ingredient)
+        if new_state:
+            children.append(new_state)
+    return children
 
 
-# Check objective test
-score = objective_test(new_state, clients)
-print("Score:", score)
