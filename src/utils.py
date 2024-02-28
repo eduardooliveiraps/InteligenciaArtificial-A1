@@ -10,9 +10,6 @@ clients = []
 # Set to store all unique ingredients mentioned by the clients
 unique_ingredients = set()
 
-# Set to store the ingredients selected for the pizza
-pizza_ingredients = set()
-
 
 # Function to read the input file and store the data in the clients list
 def read_input_file(filename):
@@ -38,4 +35,3 @@ def read_input_file(filename):
 def clear_data():
     clients.clear()
     unique_ingredients.clear()
-    pizza_ingredients.clear()
