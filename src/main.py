@@ -1,5 +1,8 @@
 import utils
 import pizza
+import warnings
+
+warnings.filterwarnings("ignore", category=UserWarning, module="pygad")
 
 
 # List of possible algorithms
@@ -58,6 +61,13 @@ def main():
     file_name = select_file()
     
     utils.read_input_file(file_name)
+
+    solution, score = utils.genetic_algorithm()  # Get the solution and score from the genetic algorithm
+    
+    # Print the solution and score
+    ingredients = ' '.join(solution)
+    print(f'{len(solution)} {ingredients}')
+    print(f"Score: {score}") 
     
     #algorithm_choice = select_algorithm()
     
@@ -66,12 +76,12 @@ def main():
     # Here we would call the selected algorithm function
 
     # For now, we will just run the Breadth First Search algorithm
-    goal = utils.breadth_first_search(pizza.PizzaState(), 
-                           utils.goal_pizza_state, 
-                            utils.child_pizza_states)
+    #goal = utils.breadth_first_search(pizza.PizzaState(), 
+                           #utils.goal_pizza_state, 
+                            #utils.child_pizza_states)
     
     # Print the goal state and the solution
-    print(goal.state)
-    utils.print_solution(goal)
+    #print(goal.state)
+    #utils.print_solution(goal)
 
 main() 

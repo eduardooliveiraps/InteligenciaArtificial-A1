@@ -36,12 +36,4 @@ def remove_ingredient(state, ingredient):
         return state.rem_ing(ingredient)
     return None
 
-# Objective function for the pizza problem
-def objective_test(state, clients):
-    satisfied_clients = 0
-    for client in clients:
-        if all(ingredient in state.ingredients for ingredient in client.likes) and \
-                not any(ingredient in state.ingredients for ingredient in client.dislikes):
-            satisfied_clients += 1
-    return satisfied_clients
 
