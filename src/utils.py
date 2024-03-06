@@ -1,6 +1,7 @@
 from collections import deque
 import pizza
 import pygad
+import random
 
 # Definition of the Client class that contaains the list of ingredients the client likes and dislikes
 class Client:
@@ -125,7 +126,6 @@ def breadth_first_search(initial_state, goal_state_func, operators_func):
 
 
 # Gentic Algorithm
-
 def evaluate(pizza: set[str]) -> int:
     global clients
     result = 0
@@ -164,3 +164,85 @@ def genetic_algorithm(generations=2000):
 
         return solution, score
     
+# Neighborhood Function for the Tabu Algorithm
+def improved_child_pizza_states(state, tabu_list):
+    global unique_ingredients
+    new_states = []
+    # Randomized neighborhood exploration
+    ingredients_to_explore = random.sample(unique_ingredients, min(len(unique_ingredients), 5))
+    for ingredient in ingredients_to_explore:
+        # Explore addition of ingredients
+        add_state = pizza.add_ingredient(state, ingredient)
+        if add_state and add_state not in tabu_list:
+            new_states.append(add_state)
+        # Explore removal of ingredients
+        rem_state = pizza.remove_ingredient(state, ingredient)
+        if rem_state and rem_state not in tabu_list:
+            new_states.append(rem_state)
+    return new_states
+
+# Tabu Search Algorithm
+def tabu_search(initial_solution, objective_function, neighborhood_function, max_iterations=1000, tabu_tenure=10):
+    global clients
+    # Initialize tabu list
+    tabu_list = []
+    
+    # Initialize current solution
+    current_solution = initial_solution
+    
+    # Initialize best solution
+    best_solution = current_solution
+    best_score = objective_function(best_solution, clients)
+    
+    # Tabu search algorithm
+    for i in range(max_iterations):
+        # Generate neighboring solutions
+        neighbors = neighborhood_function(current_solution, tabu_list)
+        
+        # Filter out tabu solutions
+        non_tabu_neighbors = [neighbor for neighbor in neighbors if neighbor not in tabu_list]
+        
+        # Evaluate neighbor solutions
+        neighbor_scores = [(neighbor, objective_function(neighbor, clients)) for neighbor in non_tabu_neighbors]
+        
+        # Select the best neighbor solution
+        neighbor_scores.sort(key=lambda x: x[1], reverse=True)
+        best_neighbor, best_neighbor_score = neighbor_scores[0]
+        
+        # Check aspiration criteria
+        if best_neighbor_score > best_score:
+            # Override tabu status if the aspiration criteria are met
+            current_solution = best_neighbor
+            best_solution = best_neighbor
+            best_score = best_neighbor_score
+        else:
+            # Update current solution
+            current_solution = best_neighbor
+        
+        # Update best solution if applicable
+        if best_neighbor_score > best_score:
+            best_solution = best_neighbor
+            best_score = best_neighbor_score
+        
+        # Add current solution to tabu list
+        tabu_list.append(current_solution)
+        
+        # Maintain tabu list size
+        if len(tabu_list) > tabu_tenure:
+            tabu_list.pop(0)
+        
+        # Check termination condition (e.g., no improvement for several iterations)
+        # Terminate if the termination condition is met
+        # In this example, we'll terminate if no improvement is observed after 100 iterations
+        if i > 100 and best_neighbor_score == best_score:
+            break
+    
+    return best_solution, best_score
+
+
+def run_tabu_search():
+    initial_solution = pizza.PizzaState()
+    best_solution, best_score = tabu_search(initial_solution, objective_test, improved_child_pizza_states)
+
+    return best_solution, best_score
+
