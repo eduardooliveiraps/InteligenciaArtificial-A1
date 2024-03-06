@@ -164,7 +164,6 @@ def genetic_algorithm(generations=2000):
 
         return solution, score
     
-global 
 
 def hill_climbing_algorithm():
     global clients, unique_ingredients, score, solution
