@@ -164,3 +164,63 @@ def genetic_algorithm(generations=2000):
 
         return solution, score
     
+global 
+
+def hill_climbing_algorithm():
+    global clients, unique_ingredients, score, solution
+
+    #print("clients length:", len(clients))
+
+    current_solution = pizza.PizzaState()
+    current_score = objective_test(current_solution, clients)
+
+    while True:
+        neighbors = generate_neighbors(current_solution)
+        best_neighbor = current_solution
+        best_neighbor_score = current_score
+
+        for neighbor in neighbors:
+            neighbor_score = objective_test(neighbor, clients)
+            #print(neighbor.ingredients, neighbor_score)
+            if neighbor_score > best_neighbor_score:
+                best_neighbor = neighbor
+                best_neighbor_score = neighbor_score
+
+        # Terminate if no better neighbor is found
+        if best_neighbor_score <= current_score:
+            break
+
+        # Update the current solution and score
+        current_solution = best_neighbor
+        current_score = best_neighbor_score
+        print("Current Score:", current_score)
+
+    # Set the solution and score
+    solution = current_solution.ingredients
+    score = current_score
+
+    return solution, score
+
+
+count = 0
+
+def generate_neighbors(solution):
+    neighbors = []
+    global count
+    print("Count:", count)
+    # Generate neighbors by adding one missing ingredient to the current solution
+    for ingredient in unique_ingredients:
+        if ingredient not in solution.ingredients:
+            new_neighbor = solution.add_ing(ingredient)
+            #print("Add:", ingredient)  # Print the ingredient added
+            neighbors.append(new_neighbor)
+
+    # Generate neighbors by removing one ingredient from the current solution
+    for ingredient in solution.ingredients:
+        if ingredient in solution.ingredients:
+            new_neighbor = solution.rem_ing(ingredient)
+            #print("Remove:", ingredient)  # Print the ingredient removed
+            neighbors.append(new_neighbor)
+
+    count += 1
+    return neighbors
