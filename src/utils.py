@@ -168,21 +168,20 @@ def genetic_algorithm(generations=2000):
 def improved_child_pizza_states(state, tabu_list):
     global unique_ingredients
     new_states = []
-    # Randomized neighborhood exploration
-    ingredients_to_explore = random.sample(unique_ingredients, min(len(unique_ingredients), 5))
-    for ingredient in ingredients_to_explore:
-        # Explore addition of ingredients
+
+    # Explore addition/removal of ingredients
+    for ingredient in unique_ingredients:
         add_state = pizza.add_ingredient(state, ingredient)
         if add_state and add_state not in tabu_list:
             new_states.append(add_state)
-        # Explore removal of ingredients
         rem_state = pizza.remove_ingredient(state, ingredient)
         if rem_state and rem_state not in tabu_list:
             new_states.append(rem_state)
+    
     return new_states
 
 # Tabu Search Algorithm
-def tabu_search(initial_solution, objective_function, neighborhood_function, max_iterations=1000, tabu_tenure=10):
+def tabu_search(initial_solution, objective_function, neighborhood_function, max_iterations=1000, tabu_tenure=10, aspiration_threshold=1):
     global clients
     # Initialize tabu list
     tabu_list = []
@@ -203,27 +202,34 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
         non_tabu_neighbors = [neighbor for neighbor in neighbors if neighbor not in tabu_list]
         
         # Evaluate neighbor solutions
-        neighbor_scores = [(neighbor, objective_function(neighbor, clients)) for neighbor in non_tabu_neighbors]
+        neighbor_scores = [(neighbor, objective_function(neighbor, clients)) for neighbor in neighbors]
+        non_tabu_neighbor_scores = [(neighbor, objective_function(neighbor, clients)) for neighbor in non_tabu_neighbors]
         
         # Select the best neighbor solution
         neighbor_scores.sort(key=lambda x: x[1], reverse=True)
         best_neighbor, best_neighbor_score = neighbor_scores[0]
-        
-        # Check aspiration criteria
-        if best_neighbor_score > best_score:
-            # Override tabu status if the aspiration criteria are met
-            current_solution = best_neighbor
-            best_solution = best_neighbor
-            best_score = best_neighbor_score
+
+        # Select the best non-tabu neighbor solution
+        non_tabu_neighbor_scores.sort(key=lambda x: x[1], reverse=True)
+        best_non_tabu_neighbor, best_non_tabu_neighbor_score = non_tabu_neighbor_scores[0]
+
+        # Check if the best solution is a superior move and is on the tabu list
+        if best_neighbor_score > best_score and best_neighbor in tabu_list:
+            # Apply aspiration criteria
+            if best_neighbor_score - best_score > aspiration_threshold:
+                current_solution = best_neighbor
+                best_solution = best_neighbor
+                best_score = best_neighbor_score
+            else:
+                current_solution = best_non_tabu_neighbor
+                best_solution = current_solution
+                best_score = best_non_tabu_neighbor_score
         else:
-            # Update current solution
-            current_solution = best_neighbor
-        
-        # Update best solution if applicable
-        if best_neighbor_score > best_score:
-            best_solution = best_neighbor
-            best_score = best_neighbor_score
-        
+            # Apply the best non-tabu move
+            current_solution = best_non_tabu_neighbor
+            best_solution = current_solution
+            best_score = best_non_tabu_neighbor_score
+
         # Add current solution to tabu list
         tabu_list.append(current_solution)
         
@@ -242,7 +248,7 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
 
 def run_tabu_search():
     initial_solution = pizza.PizzaState()
-    best_solution, best_score = tabu_search(initial_solution, objective_test, improved_child_pizza_states)
+    best_solution, best_score = tabu_search(initial_solution, objective_test, improved_child_pizza_states, aspiration_threshold=2)
 
     return best_solution, best_score
 
