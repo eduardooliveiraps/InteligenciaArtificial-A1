@@ -163,27 +163,23 @@ def genetic_algorithm(generations=2000):
         score = solution_fitness
 
         return solution, score
-    
 
 def hill_climbing_algorithm():
     global clients, unique_ingredients, score, solution
 
-    #print("clients length:", len(clients))
+    print("clients length:", len(clients))
 
+    #NEED TO CHANGE THIS TO A RANDOM INITIAL SOLUTION (BASED ON A CLIENT)
     current_solution = pizza.PizzaState()
+
+    print("Starting Solution:", current_solution.ingredients)
     current_score = objective_test(current_solution, clients)
 
-    while True:
-        neighbors = generate_neighbors(current_solution)
-        best_neighbor = current_solution
-        best_neighbor_score = current_score
+    best_neighbor = current_solution
+    best_neighbor_score = current_score
 
-        for neighbor in neighbors:
-            neighbor_score = objective_test(neighbor, clients)
-            #print(neighbor.ingredients, neighbor_score)
-            if neighbor_score > best_neighbor_score:
-                best_neighbor = neighbor
-                best_neighbor_score = neighbor_score
+    while True:
+        best_neighbor, best_neighbor_score = generate_best_neighbor(current_solution, current_score)
 
         # Terminate if no better neighbor is found
         if best_neighbor_score <= current_score:
@@ -199,6 +195,35 @@ def hill_climbing_algorithm():
     score = current_score
 
     return solution, score
+
+count1 = 0
+
+def generate_best_neighbor(cur_solution, cur_solution_score):
+    global count1
+    print("Count:", count1)
+
+    b_neighbor = cur_solution
+    b_neighbor_score = cur_solution_score
+
+    # Generate neighbors by adding one missing ingredient to the current solution
+    for ingredient in unique_ingredients:
+        if ingredient not in cur_solution.ingredients:
+            new_neighbor = cur_solution.add_ing(ingredient)
+            #print("Add:", new_neighbor.ingredients)  # Print the ingredient added
+            if((objective_test(new_neighbor, clients) > b_neighbor_score)):
+                b_neighbor = new_neighbor
+                b_neighbor_score = objective_test(new_neighbor, clients)
+    # Generate neighbors by removing one ingredient from the current solution
+    for ingredient in unique_ingredients:
+        if ingredient in cur_solution.ingredients:
+            new_neighbor = cur_solution.rem_ing(ingredient)
+            #print("Remove:", new_neighbor.ingredients)  # Print the ingredient removed
+            if((objective_test(new_neighbor, clients) > b_neighbor_score)):
+                b_neighbor = new_neighbor
+                b_neighbor_score = objective_test(new_neighbor, clients)
+
+    count1 += 1
+    return b_neighbor, b_neighbor_score
 
 
 count = 0
