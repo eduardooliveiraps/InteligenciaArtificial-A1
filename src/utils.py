@@ -196,6 +196,7 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
     
     # Tabu search algorithm
     for i in range(max_iterations):
+        print(i, best_score, best_solution.ingredients)
         # Generate neighboring solutions
         neighbors = neighborhood_function(current_solution, tabu_list)
         
@@ -248,8 +249,8 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
 
 
 def run_tabu_search():
-    initial_solution = pizza.PizzaState()
-    best_solution, best_score = tabu_search(initial_solution, objective_test, improved_child_pizza_states, aspiration_threshold=2)
+    initial_solution = generate_starting_state(clients)
+    best_solution, best_score = tabu_search(initial_solution, objective_test, improved_child_pizza_states, aspiration_threshold=1, tabu_tenure=15)
 
     return best_solution, best_score
 

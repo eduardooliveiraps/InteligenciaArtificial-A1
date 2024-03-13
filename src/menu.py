@@ -46,16 +46,20 @@ class MenuStateManager:
         menu.add.button('Quit', pygame_menu.events.EXIT)
 
         menu.mainloop(self.screen)
-
+        
     # Render the gameplay screen
     def render_loading(self):
-        solution, score = self.start_algorithm()
-        self.render_results(solution, score)
+        menu = pygame_menu.Menu('Loading', 1000, 700,
+                        theme=pygame_menu.themes.THEME_DARK)
+        menu.add.label("Running Algorithm...")
+        menu.add.button('Results', self.render_results)
+        menu.add.button('Quit', pygame_menu.events.EXIT)
 
+        menu.mainloop(self.screen)
 
     # Render the game over screen
-    def render_results(self, solution, score):
-        self.start_algorithm()
+    def render_results(self):
+        solution, score = self.start_algorithm()
         menu = pygame_menu.Menu('Solution', 1000, 700,
                         theme=pygame_menu.themes.THEME_DARK)
         menu.add.label(f"Best solution: {solution}")
