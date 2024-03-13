@@ -1,6 +1,7 @@
 from collections import deque
 import pizza
 import pygad
+import random
 
 # Definition of the Client class that contaains the list of ingredients the client likes and dislikes
 class Client:
@@ -165,12 +166,11 @@ def genetic_algorithm(generations=2000):
         return solution, score
 
 def hill_climbing_algorithm():
-    global clients, unique_ingredients, score, solution
+    global clients, unique_ingredients, score
 
     print("clients length:", len(clients))
 
-    #NEED TO CHANGE THIS TO A RANDOM INITIAL SOLUTION (BASED ON A CLIENT)
-    current_solution = pizza.PizzaState()
+    current_solution = generate_starting_state(clients)
 
     print("Starting Solution:", current_solution.ingredients)
     current_score = objective_test(current_solution, clients)
@@ -248,3 +248,8 @@ def generate_neighbors(solution):
 
     count += 1
     return neighbors
+
+def generate_starting_state(clients):
+    selected_client = random.choice(clients)
+    ingredients = selected_client.likes
+    return pizza.PizzaState(ingredients)
