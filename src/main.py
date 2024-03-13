@@ -1,6 +1,7 @@
 import utils
-import pizza
 import warnings
+import pygame
+import pygame_menu
 
 warnings.filterwarnings("ignore", category=UserWarning, module="pygad")
 
@@ -53,35 +54,66 @@ def select_algorithm():
         except ValueError:
             print("Invalid choice. Please enter a number.")
 
-    
-# Main function
-def main():
-    display_title()
+def set_file(_, choice):
+    global file_name
+    if 0 <= choice <= 4:
+        file_name = f"../data/{files[choice]}"
 
-    file_name = select_file()
-    
+def set_algorithm(_, choice):
+    global chosen_algorithm
+    if 0 <= choice <= 3:
+        chosen_algorithm = choice
+
+def start_algorithm():
+    global state, solution, score
+    print(f"Running {algorithms[chosen_algorithm]} algorithm...")
     utils.read_input_file(file_name)
 
-    solution, score = utils.genetic_algorithm()  # Get the solution and score from the genetic algorithm
+    if chosen_algorithm == 0:
+        print ("Hill Climbing")
+        solution, score = 1, 1
+        #solution, score = utils.hill_climbing()
+    elif chosen_algorithm == 1:
+        print ("Simulated Annealing")
+        solution, score = 1, 1
+       #solution, score = utils.simulated_annealing()
+    elif chosen_algorithm == 2:
+        solution, score = utils.run_tabu_search()
+    elif chosen_algorithm == 3:
+        solution, score = utils.genetic_algorithm()
     
-    # Print the solution and score
-    ingredients = ' '.join(solution)
-    print(f'{len(solution)} {ingredients}')
-    print(f"Score: {score}") 
-    
-    #algorithm_choice = select_algorithm()
-    
-    #print(f"Running {algorithms[algorithm_choice]} algorithm...")
+    state = 1
 
-    # Here we would call the selected algorithm function
 
-    # For now, we will just run the Breadth First Search algorithm
-    #goal = utils.breadth_first_search(pizza.PizzaState(), 
-                           #utils.goal_pizza_state, 
-                            #utils.child_pizza_states)
+# Initialize the game menu
+def init_menu():
+    menu = pygame_menu.Menu('Welcome', 1000, 700,
+                        theme=pygame_menu.themes.THEME_DARK)
+
+    menu.add.dropselect('File :', [('Example', 0), ('Basic', 1), ('Coarse', 2), ('Dificult', 3), ('Elaborate', 4)], onchange=set_file)
+    menu.add.dropselect('Algorithm :', [('Hill Climbing', 0), ('Simulated Annealing', 1), ('Tabu Search', 2), ('Genetic Algorithm', 3)], onchange=set_algorithm)
+    menu.add.button('Run', start_algorithm)
+    menu.add.button('Quit', pygame_menu.events.EXIT)
+    return menu
     
-    # Print the goal state and the solution
-    #print(goal.state)
-    #utils.print_solution(goal)
+# Draw the final solution and score
+def solution_menu(solution, score):
+    menu = pygame_menu.Menu('Solution', 1000, 700,
+                        theme=pygame_menu.themes.THEME_DARK)
+    menu.add.label(f"Best solution: {solution}")
+    menu.add.label(f"Score: {score}")
+    menu.add.button('Quit', pygame_menu.events.EXIT)
+    return menu
+    
+
+# Main function
+def main():
+    global state, solution, score
+    state = 0
+    pygame.init()
+    surface = pygame.display.set_mode((1000, 700))
+    menu = init_menu()
+    menu.mainloop(surface)
+
 
 main() 
