@@ -356,7 +356,6 @@ def simulated_annealing_algorithm():
     cooling_rate = 0.001
 
     counter = 0  # initialize counter
-    previous_solution = None  # track the previous solution
 
     while temperature > 1:
         neighbors = generate_neighbors(current_solution)
@@ -385,6 +384,8 @@ def simulated_annealing_algorithm():
 
     solution = best_solution.ingredients
     score = best_score
+
+    clear_data()
 
     return solution, score
 
