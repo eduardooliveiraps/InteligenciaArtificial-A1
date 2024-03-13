@@ -64,7 +64,9 @@ def main():
 
     #solution, score = utils.genetic_algorithm()  # Get the solution and score from the genetic algorithm
 
-    solution, score = utils.run_tabu_search()
+    #solution, score = utils.hill_climbing_algorithm()
+
+    solution, score = utils.simulated_annealing_algorithm()
     
     # Print the solution and score
     ingredients = ' '.join(solution)
