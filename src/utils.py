@@ -2,7 +2,7 @@ from collections import deque
 import pizza
 import pygad
 import random
-import random
+import math
 
 # Definition of the Client class that contaains the list of ingredients the client likes and dislikes
 class Client:
@@ -343,3 +343,54 @@ def generate_starting_state(clients):
     selected_client = random.choice(clients)
     ingredients = selected_client.likes
     return pizza.PizzaState(ingredients)
+
+def simulated_annealing_algorithm():
+    global clients, unique_ingredients, score
+
+    current_solution = generate_starting_state(clients)
+    current_score = objective_test(current_solution, clients)
+
+    best_solution = current_solution
+    best_score = current_score
+
+    temperature = 100
+    cooling_rate = 0.001
+
+    counter = 0  # initialize counter
+
+    while temperature > 1:
+        neighbors = generate_neighbors(current_solution)
+
+        new_solution = random.choice(neighbors)
+        new_score = objective_test(new_solution, clients)
+
+        acceptance_probability = acceptance_probability_function(current_score, new_score, temperature)
+
+        if counter >= 100:  # break the loop if solution hasn't changed for 100 iterations
+            break
+
+        if new_score > current_score or random.random() < acceptance_probability:
+            current_solution = new_solution
+            current_score = new_score
+            counter = 0  # reset counter if solution changes
+
+        if new_score > best_score:
+            best_solution = new_solution
+            best_score = new_score
+
+        else:
+            counter += 1  # increment counter if solution doesn't change
+
+        temperature *= 1 - cooling_rate
+
+    solution = best_solution.ingredients
+    score = best_score
+
+    clear_data()
+
+    return solution, score
+
+def acceptance_probability_function(current_score, new_score, temperature):
+    if new_score > current_score:
+        return 1
+    return pow(math.e, (new_score - current_score) / temperature) / 1.75

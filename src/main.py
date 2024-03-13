@@ -28,12 +28,10 @@ def start_algorithm():
 
     if chosen_algorithm == 0:
         print ("Hill Climbing")
-        solution, score = 1, 1
-        #solution, score = utils.hill_climbing()
+        solution, score = utils.hill_climbing_algorithm()
     elif chosen_algorithm == 1:
         print ("Simulated Annealing")
-        solution, score = 1, 1
-       #solution, score = utils.simulated_annealing()
+        solution, score = utils.simulated_annealing_algorithm()
     elif chosen_algorithm == 2:
         solution, score = utils.run_tabu_search()
     elif chosen_algorithm == 3:
@@ -46,6 +44,7 @@ def start_algorithm():
 def main():
     menu_state_manager = menu.MenuStateManager(start_algorithm=start_algorithm, set_file=set_file, set_algorithm=set_algorithm)
     menu_state_manager.render()
+
 
 
 main() 
