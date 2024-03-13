@@ -2,6 +2,7 @@ from collections import deque
 import pizza
 import pygad
 import random
+import random
 
 # Definition of the Client class that contaains the list of ingredients the client likes and dislikes
 class Client:
@@ -252,3 +253,92 @@ def run_tabu_search():
 
     return best_solution, best_score
 
+
+def hill_climbing_algorithm():
+    global clients, unique_ingredients, score
+
+    print("clients length:", len(clients))
+
+    current_solution = generate_starting_state(clients)
+
+    print("Starting Solution:", current_solution.ingredients)
+    current_score = objective_test(current_solution, clients)
+
+    best_neighbor = current_solution
+    best_neighbor_score = current_score
+
+    while True:
+        best_neighbor, best_neighbor_score = generate_best_neighbor(current_solution, current_score)
+
+        # Terminate if no better neighbor is found
+        if best_neighbor_score <= current_score:
+            break
+
+        # Update the current solution and score
+        current_solution = best_neighbor
+        current_score = best_neighbor_score
+        print("Current Score:", current_score)
+
+    # Set the solution and score
+    solution = current_solution.ingredients
+    score = current_score
+
+    return solution, score
+
+count1 = 0
+
+def generate_best_neighbor(cur_solution, cur_solution_score):
+    global count1
+    print("Count:", count1)
+
+    b_neighbor = cur_solution
+    b_neighbor_score = cur_solution_score
+
+    # Generate neighbors by adding one missing ingredient to the current solution
+    for ingredient in unique_ingredients:
+        if ingredient not in cur_solution.ingredients:
+            new_neighbor = cur_solution.add_ing(ingredient)
+            #print("Add:", new_neighbor.ingredients)  # Print the ingredient added
+            if((objective_test(new_neighbor, clients) > b_neighbor_score)):
+                b_neighbor = new_neighbor
+                b_neighbor_score = objective_test(new_neighbor, clients)
+    # Generate neighbors by removing one ingredient from the current solution
+    for ingredient in unique_ingredients:
+        if ingredient in cur_solution.ingredients:
+            new_neighbor = cur_solution.rem_ing(ingredient)
+            #print("Remove:", new_neighbor.ingredients)  # Print the ingredient removed
+            if((objective_test(new_neighbor, clients) > b_neighbor_score)):
+                b_neighbor = new_neighbor
+                b_neighbor_score = objective_test(new_neighbor, clients)
+
+    count1 += 1
+    return b_neighbor, b_neighbor_score
+
+
+count = 0
+
+def generate_neighbors(solution):
+    neighbors = []
+    global count
+    print("Count:", count)
+    # Generate neighbors by adding one missing ingredient to the current solution
+    for ingredient in unique_ingredients:
+        if ingredient not in solution.ingredients:
+            new_neighbor = solution.add_ing(ingredient)
+            #print("Add:", ingredient)  # Print the ingredient added
+            neighbors.append(new_neighbor)
+
+    # Generate neighbors by removing one ingredient from the current solution
+    for ingredient in solution.ingredients:
+        if ingredient in solution.ingredients:
+            new_neighbor = solution.rem_ing(ingredient)
+            #print("Remove:", ingredient)  # Print the ingredient removed
+            neighbors.append(new_neighbor)
+
+    count += 1
+    return neighbors
+
+def generate_starting_state(clients):
+    selected_client = random.choice(clients)
+    ingredients = selected_client.likes
+    return pizza.PizzaState(ingredients)
