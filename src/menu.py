@@ -1,5 +1,6 @@
 import pygame
 import pygame_menu
+import utils
 from enum import Enum
 
 # Define the possible game states using an Enum
@@ -12,9 +13,9 @@ class MenuState(Enum):
 # The MenuStateManager class manages the game states and handles events, updates, and rendering
 class MenuStateManager:
     def __init__(self, start_algorithm, set_file, set_algorithm, width=1000, heigh=700):
-        self.start_algorithm = start_algorithm
         self.set_file = set_file
         self.set_algorithm = set_algorithm
+        self.algorithm = utils.Algorithm(function=start_algorithm)
 
         pygame.init()
         self.screen = pygame.display.set_mode((width, heigh))
@@ -48,18 +49,34 @@ class MenuStateManager:
         menu.mainloop(self.screen)
         
     # Render the gameplay screen
-    def render_loading(self):
+    def render_loading(self):        
         menu = pygame_menu.Menu('Loading', 1000, 700,
                         theme=pygame_menu.themes.THEME_DARK)
         menu.add.label("Running Algorithm...")
-        menu.add.button('Results', self.render_results)
+        menu.add.label(f"Current solution: {self.algorithm.current_solution}")
+        menu.add.label(f"Current Score: {self.algorithm.current_score}")
+        menu.add.button('Stop', self.render_initial_menu)
         menu.add.button('Quit', pygame_menu.events.EXIT)
 
-        menu.mainloop(self.screen)
+        self.algorithm.run()
+
+        pygame.display.flip()
+        pygame.display.update()
+
+        # Clamp FPS
+        #FPSCLOCK.tick_busy_loop(60)
+
+
+
+        pygame.display.flip()
+
+
+        if self.algorithm.finished:
+            self.render_results(self.algorithm.current_solution, self.algorithm.current_score)        
 
     # Render the game over screen
-    def render_results(self):
-        solution, score = self.start_algorithm()
+    def render_results(self, solution, score):
+        #solution, score = self.start_algorithm()
         menu = pygame_menu.Menu('Solution', 1000, 700,
                         theme=pygame_menu.themes.THEME_DARK)
         menu.add.label(f"Best solution: {solution}")

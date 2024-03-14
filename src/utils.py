@@ -101,6 +101,18 @@ class TreeNode:
 ##############
 # ALGORITHMS #
 ##############
+        
+class Algorithm:
+    def __init__(self, function):
+        self.function = function
+        self.current_solution = None
+        self.current_score = 0
+        self.finished = False
+
+    def run(self):
+        self.current_solution, self.current_score = self.function(self)
+        self.finished = True
+        return self.current_solution, self.current_score
 
 # Breadth First Search Algorithm
 def breadth_first_search(initial_state, goal_state_func, operators_func):
@@ -182,7 +194,7 @@ def improved_child_pizza_states(state, tabu_list):
     return new_states
 
 # Tabu Search Algorithm
-def tabu_search(initial_solution, objective_function, neighborhood_function, max_iterations=1000, tabu_tenure=10, aspiration_threshold=1):
+def tabu_search(algorithm, initial_solution, objective_function, neighborhood_function, max_iterations=1000, tabu_tenure=10, aspiration_threshold=1):
     global clients
     # Initialize tabu list
     tabu_list = []
@@ -193,6 +205,10 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
     # Initialize best solution
     best_solution = current_solution
     best_score = objective_function(best_solution, clients)
+
+    # Set the current solution and score
+    algorithm.current_solution = best_solution
+    algorithm.current_score = best_score
     
     # Tabu search algorithm
     for i in range(max_iterations):
@@ -234,6 +250,10 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
 
         # Add current solution to tabu list
         tabu_list.append(current_solution)
+
+        # Update the current solution and score
+        algorithm.current_solution = best_solution
+        algorithm.current_score = best_score
         
         # Maintain tabu list size
         if len(tabu_list) > tabu_tenure:
@@ -248,9 +268,9 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
     return best_solution, best_score
 
 
-def run_tabu_search():
+def run_tabu_search(algorithm):
     initial_solution = generate_starting_state(clients)
-    best_solution, best_score = tabu_search(initial_solution, objective_test, improved_child_pizza_states, aspiration_threshold=1, tabu_tenure=15)
+    best_solution, best_score = tabu_search(algorithm, initial_solution, objective_test, improved_child_pizza_states, aspiration_threshold=1, tabu_tenure=15)
 
     return best_solution, best_score
 

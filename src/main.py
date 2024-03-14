@@ -22,7 +22,7 @@ def set_algorithm(_, choice):
     if 0 <= choice <= 3:
         chosen_algorithm = choice
 
-def start_algorithm():
+def start_algorithm(algorithm):
     print(f"Running {algorithms[chosen_algorithm]} algorithm...")
     utils.read_input_file(file_name)
 
@@ -33,7 +33,7 @@ def start_algorithm():
         print ("Simulated Annealing")
         solution, score = utils.simulated_annealing_algorithm()
     elif chosen_algorithm == 2:
-        solution, score = utils.run_tabu_search()
+        solution, score = utils.run_tabu_search(algorithm)
     elif chosen_algorithm == 3:
         solution, score = utils.genetic_algorithm()
     
