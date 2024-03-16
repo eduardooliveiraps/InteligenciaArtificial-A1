@@ -3,6 +3,7 @@ import warnings
 import pygame
 import pygame_menu
 import menu
+import app
 
 warnings.filterwarnings("ignore", category=UserWarning, module="pygad")
 
@@ -12,17 +13,17 @@ algorithms = ["Hill Climbing", "Simulated Annealing", "Tabu Search", "Genetic Al
 # List of possible input files
 files = ["a_an_example.in.txt", "b_basic.in.txt", "c_coarse.in.txt", "d_difficult.in.txt", "e_elaborate.in.txt"]
 
-def set_file(_, choice):
+def set_file(choice):
     global file_name
     if 0 <= choice <= 4:
-        file_name = f"../data/{files[choice]}"
+        file_name = f"data/{files[choice]}"
 
-def set_algorithm(_, choice):
+def set_algorithm(choice):
     global chosen_algorithm
     if 0 <= choice <= 3:
         chosen_algorithm = choice
 
-def start_algorithm(algorithm):
+def start_algorithm():
     print(f"Running {algorithms[chosen_algorithm]} algorithm...")
     utils.read_input_file(file_name)
 
@@ -33,7 +34,7 @@ def start_algorithm(algorithm):
         print ("Simulated Annealing")
         solution, score = utils.simulated_annealing_algorithm()
     elif chosen_algorithm == 2:
-        solution, score = utils.run_tabu_search(algorithm)
+        solution, score = utils.run_tabu_search()
     elif chosen_algorithm == 3:
         solution, score = utils.genetic_algorithm()
     
@@ -42,8 +43,10 @@ def start_algorithm(algorithm):
 
 # Main function
 def main():
-    menu_state_manager = menu.MenuStateManager(start_algorithm=start_algorithm, set_file=set_file, set_algorithm=set_algorithm)
-    menu_state_manager.render()
+    #menu_state_manager = menu.MenuStateManager(start_algorithm=start_algorithm, set_file=set_file, set_algorithm=set_algorithm)
+    #menu_state_manager.render()
+
+    app.run_app(start_algorithm=start_algorithm, set_file=set_file, set_algorithm=set_algorithm)
 
 
 
