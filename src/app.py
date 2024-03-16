@@ -98,11 +98,15 @@ class App(customtkinter.CTk):
     def run_button_callback(self):
         self.progress_bar.start()
         print("Run button clicked...")
+        solution, score = self.start_algorithm(self.update_solution_and_score)
+        self.update_solution_and_score(solution, score)
+        self.progress_bar.stop()
+
+    def update_solution_and_score(self, solution, score):
         self.solution.delete("0.0", "end") # delete all text
-        solution, score = self.start_algorithm()
         self.solution.insert("0.0", solution) # insert at line 0 character 0
         self.score.configure(text=score)
-        self.progress_bar.stop()
+        self.solution_frame.update()
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)

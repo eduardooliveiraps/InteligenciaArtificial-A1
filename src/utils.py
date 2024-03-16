@@ -185,7 +185,7 @@ def improved_child_pizza_states(state, tabu_list):
     return new_states
 
 # Tabu Search Algorithm
-def tabu_search(initial_solution, objective_function, neighborhood_function, max_iterations=1000, tabu_tenure=10, aspiration_threshold=1):
+def tabu_search(initial_solution, objective_function, neighborhood_function, max_iterations=1000, tabu_tenure=10, aspiration_threshold=1, update_solution_and_score=None):
     global clients
     # Initialize tabu list
     tabu_list = []
@@ -198,8 +198,9 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
     best_score = objective_function(best_solution, clients)
 
     # Set the current solution and score
-    #algorithm.current_solution = best_solution
-    #algorithm.current_score = best_score
+    if update_solution_and_score:
+        update_solution_and_score(best_solution, best_score)
+
     
     # Tabu search algorithm
     for i in range(max_iterations):
@@ -243,8 +244,8 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
         tabu_list.append(current_solution)
 
         # Update the current solution and score
-        #algorithm.current_solution = best_solution
-        #algorithm.current_score = best_score
+        if update_solution_and_score:
+            update_solution_and_score(best_solution, best_score)
         
         # Maintain tabu list size
         if len(tabu_list) > tabu_tenure:
@@ -259,14 +260,14 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
     return best_solution, best_score
 
 
-def run_tabu_search():
+def run_tabu_search(update_solution_and_score):
     initial_solution = generate_starting_state(clients)
-    best_solution, best_score = tabu_search(initial_solution, objective_test, improved_child_pizza_states, aspiration_threshold=1, tabu_tenure=15)
+    best_solution, best_score = tabu_search(initial_solution, objective_test, improved_child_pizza_states, aspiration_threshold=1, tabu_tenure=15, update_solution_and_score=update_solution_and_score)
 
     return best_solution, best_score
 
 
-def hill_climbing_algorithm():
+def hill_climbing_algorithm(update_solution_and_score=None):
     global clients, unique_ingredients, score
 
     print("clients length:", len(clients))
@@ -279,6 +280,10 @@ def hill_climbing_algorithm():
     best_neighbor = current_solution
     best_neighbor_score = current_score
 
+    # Set the current solution and score
+    if update_solution_and_score:
+        update_solution_and_score(best_neighbor, best_neighbor_score)
+
     while True:
         best_neighbor, best_neighbor_score = generate_best_neighbor(current_solution, current_score)
 
@@ -290,6 +295,9 @@ def hill_climbing_algorithm():
         current_solution = best_neighbor
         current_score = best_neighbor_score
         print("Current Score:", current_score)
+        # Set the current solution and score
+        if update_solution_and_score:
+            update_solution_and_score(current_solution, current_score)
 
     # Set the solution and score
     solution = current_solution.ingredients
@@ -355,7 +363,7 @@ def generate_starting_state(clients):
     ingredients = selected_client.likes
     return pizza.PizzaState(ingredients)
 
-def simulated_annealing_algorithm():
+def simulated_annealing_algorithm(update_solution_and_score=None):
     global clients, unique_ingredients, score
 
     current_solution = generate_starting_state(clients)
@@ -363,6 +371,10 @@ def simulated_annealing_algorithm():
 
     best_solution = current_solution
     best_score = current_score
+
+    # Set the current solution and score
+    if update_solution_and_score:
+        update_solution_and_score(best_solution, best_score)
 
     temperature = 100
     cooling_rate = 0.001
@@ -393,6 +405,9 @@ def simulated_annealing_algorithm():
             counter += 1  # increment counter if solution doesn't change
 
         temperature *= 1 - cooling_rate
+        # Update the current solution and score
+        if update_solution_and_score:
+            update_solution_and_score(best_solution, best_score)
 
     solution = best_solution.ingredients
     score = best_score

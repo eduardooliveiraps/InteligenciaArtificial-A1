@@ -20,18 +20,18 @@ def set_algorithm(choice):
     if 0 <= choice <= 3:
         chosen_algorithm = choice
 
-def start_algorithm():
+def start_algorithm(update_solution_and_score):
     print(f"Running {algorithms[chosen_algorithm]} algorithm...")
     utils.read_input_file(file_name)
 
     if chosen_algorithm == 0:
         print ("Hill Climbing")
-        solution, score = utils.hill_climbing_algorithm()
+        solution, score = utils.hill_climbing_algorithm(update_solution_and_score)
     elif chosen_algorithm == 1:
         print ("Simulated Annealing")
-        solution, score = utils.simulated_annealing_algorithm()
+        solution, score = utils.simulated_annealing_algorithm(update_solution_and_score)
     elif chosen_algorithm == 2:
-        solution, score = utils.run_tabu_search()
+        solution, score = utils.run_tabu_search(update_solution_and_score)
     elif chosen_algorithm == 3:
         solution, score = utils.genetic_algorithm()
     
