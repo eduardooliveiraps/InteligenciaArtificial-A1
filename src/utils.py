@@ -24,6 +24,9 @@ score = 0
 
 # Function to read the input file and store the data in the clients list
 def read_input_file(filename):
+    global clients, unique_ingredients
+    # Clear the data structures
+    clear_data()
     # Open the file for reading
     with open(filename, 'r') as file:
         # Read the number of clients from the first line of the file and convert to an integer
@@ -101,18 +104,6 @@ class TreeNode:
 ##############
 # ALGORITHMS #
 ##############
-        
-class Algorithm:
-    def __init__(self, function):
-        self.function = function
-        self.current_solution = None
-        self.current_score = 0
-        self.finished = False
-
-    def run(self):
-        self.current_solution, self.current_score = self.function(self)
-        self.finished = True
-        return self.current_solution, self.current_score
 
 # Breadth First Search Algorithm
 def breadth_first_search(initial_state, goal_state_func, operators_func):
@@ -405,8 +396,6 @@ def simulated_annealing_algorithm():
 
     solution = best_solution.ingredients
     score = best_score
-
-    clear_data()
 
     return solution, score
 
