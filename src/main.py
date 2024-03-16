@@ -1,8 +1,5 @@
 import utils
 import warnings
-import pygame
-import pygame_menu
-import menu
 import app
 
 warnings.filterwarnings("ignore", category=UserWarning, module="pygad")

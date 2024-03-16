@@ -64,8 +64,8 @@ class App(customtkinter.CTk):
                                                         font=customtkinter.CTkFont(size=14, weight="bold"), 
                                                         command=self.run_button_callback)
         self.run_button.grid(row=1, column=1, padx=20, pady=(10, 10), sticky="ew")
-        self.progressbar_2 = customtkinter.CTkProgressBar(self.options_frame)
-        self.progressbar_2.grid(row=1, column=0, padx=20, pady=(10, 10), sticky="ew")
+        self.progress_bar = customtkinter.CTkProgressBar(self.options_frame)
+        self.progress_bar.grid(row=1, column=0, padx=20, pady=(10, 10), sticky="ew")
         self.solution_frame = customtkinter.CTkFrame(self, width=200, corner_radius=0)
         self.solution_frame.grid(row=1, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
         self.solution_label = customtkinter.CTkLabel(self.solution_frame, text="Solution:", font=customtkinter.CTkFont(size=14, weight="normal"))
@@ -82,6 +82,8 @@ class App(customtkinter.CTk):
         self.optionmenu_file.set("Select File")
         self.optionmenu_algorithm.set("Select Algorithm")
         self.textbox.insert("0.0", "One Pizza Problem\n\n" + "You are opening a small pizzeria. In fact, your pizzeria is so small that you decided to offer only one type of pizza.\nNow you need to decide what ingredients to include (peppers? tomatoes?both?).\nEveryone has their own pizza preferences.\nEach of your potential clients has some ingredientsthey like, and maybe some ingredients they dislike.\nEach client will come to your pizzeria if both conditions are true:\n\n  1. all the ingredients they like are on the pizza\n  2. none of the ingredients they dislike are on the pizza.\n\n")
+        self.progress_bar.configure(mode="indeterminnate")
+        self.progress_bar.start()
 
     def option_file_callback(self, choice):
         print("Selected File:", choice)
@@ -94,12 +96,13 @@ class App(customtkinter.CTk):
         self.set_algorithm(choice=choice_idx)
 
     def run_button_callback(self):
+        self.progress_bar.start()
         print("Run button clicked...")
         self.solution.delete("0.0", "end") # delete all text
         solution, score = self.start_algorithm()
         self.solution.insert("0.0", solution) # insert at line 0 character 0
         self.score.configure(text=score)
-        print (solution, score)
+        self.progress_bar.stop()
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
