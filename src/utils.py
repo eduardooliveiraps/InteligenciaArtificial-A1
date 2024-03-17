@@ -201,10 +201,11 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
     if update_solution_and_score:
         update_solution_and_score(best_solution, best_score)
 
-    
+    same_score_iteration = 0
+
     # Tabu search algorithm
     for i in range(max_iterations):
-        print(i, best_score, best_solution.ingredients)
+        print(i, best_score, current_solution.ingredients)
         # Generate neighboring solutions
         neighbors = neighborhood_function(current_solution, tabu_list)
         
@@ -224,21 +225,23 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
         best_non_tabu_neighbor, best_non_tabu_neighbor_score = non_tabu_neighbor_scores[0]
 
         # Check if the best solution is a superior move and is on the tabu list
-        if best_neighbor_score > best_score and best_neighbor in tabu_list:
+        if best_neighbor_score > best_score:
+            same_score_iteration = 0
             # Apply aspiration criteria
-            if best_neighbor_score - best_score > aspiration_threshold:
+            if best_neighbor in tabu_list and best_neighbor_score - best_score > aspiration_threshold:
+                print("Aspiration criteria applied")
                 current_solution = best_neighbor
                 best_solution = best_neighbor
                 best_score = best_neighbor_score
             else:
+                # Apply the best non-tabu move
                 current_solution = best_non_tabu_neighbor
-                best_solution = current_solution
+                best_solution = best_non_tabu_neighbor
                 best_score = best_non_tabu_neighbor_score
         else:
             # Apply the best non-tabu move
             current_solution = best_non_tabu_neighbor
-            best_solution = current_solution
-            best_score = best_non_tabu_neighbor_score
+
 
         # Add current solution to tabu list
         tabu_list.append(current_solution)
@@ -251,10 +254,12 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
         if len(tabu_list) > tabu_tenure:
             tabu_list.pop(0)
         
+        same_score_iteration += 1
+
         # Check termination condition (e.g., no improvement for several iterations)
         # Terminate if the termination condition is met
         # In this example, we'll terminate if no improvement is observed after 100 iterations
-        if i > 100 and best_neighbor_score == best_score:
+        if same_score_iteration > 20 and best_neighbor_score == best_score:
             break
     
     return best_solution, best_score
