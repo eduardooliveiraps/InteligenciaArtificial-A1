@@ -13,7 +13,7 @@ files = ["a_an_example.in.txt", "b_basic.in.txt", "c_coarse.in.txt", "d_difficul
 def set_file(choice):
     global file_name
     if 0 <= choice <= 4:
-        file_name = f"data/{files[choice]}"
+        file_name = f"../data/{files[choice]}"
 
 def set_algorithm(choice):
     global chosen_algorithm
