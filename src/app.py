@@ -1,4 +1,5 @@
 import customtkinter
+import time
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -24,65 +25,69 @@ class App(customtkinter.CTk):
         self.sidebar_frame = customtkinter.CTkFrame(self, width=150, corner_radius=0)
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
-        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="One Pizza", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="One Pizza", font=customtkinter.CTkFont(size=30, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
-        self.dev_label = customtkinter.CTkLabel(self.sidebar_frame, text="Developed by", font=customtkinter.CTkFont(size=14, weight="normal"))
+        self.dev_label = customtkinter.CTkLabel(self.sidebar_frame, text="Developed by:", font=customtkinter.CTkFont(size=18, weight="bold"))
         self.dev_label.grid(row=1, column=0, padx=20, pady=(10, 0))
-        self.dev_name_1 = customtkinter.CTkLabel(self.sidebar_frame, text="Eduardo Oliveira", font=customtkinter.CTkFont(size=14, weight="normal"))
+        self.dev_name_1 = customtkinter.CTkLabel(self.sidebar_frame, text="Eduardo Oliveira", font=customtkinter.CTkFont(size=16, weight="normal"))
         self.dev_name_1.grid(row=2, column=0, padx=20, pady=(10, 0))
-        self.dev_name_2 = customtkinter.CTkLabel(self.sidebar_frame, text="João Francisco Alves", font=customtkinter.CTkFont(size=14, weight="normal"))
+        self.dev_name_2 = customtkinter.CTkLabel(self.sidebar_frame, text="João Francisco Alves", font=customtkinter.CTkFont(size=16, weight="normal"))
         self.dev_name_2.grid(row=3, column=0, padx=20, pady=(10, 0))
-        self.dev_name_3 = customtkinter.CTkLabel(self.sidebar_frame, text="José Miguel Isidro", font=customtkinter.CTkFont(size=14, weight="normal"))
+        self.dev_name_3 = customtkinter.CTkLabel(self.sidebar_frame, text="José Miguel Isidro", font=customtkinter.CTkFont(size=16, weight="normal"))
         self.dev_name_3.grid(row=4, column=0, padx=20, pady=(10, 0))
-        self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
+        self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", font=customtkinter.CTkFont(size=16, weight="normal"), anchor="w")
         self.appearance_mode_label.grid(row=5, column=0, padx=20, pady=(30, 0))
         self.appearance_mode_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["Light", "Dark", "System"],
+                                                                       font=customtkinter.CTkFont(size=16, weight="normal"),
                                                                        command=self.change_appearance_mode_event)
         self.appearance_mode_optionemenu.grid(row=6, column=0, padx=20, pady=(10, 10))
-        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", anchor="w")
+        self.scaling_label = customtkinter.CTkLabel(self.sidebar_frame, text="UI Scaling:", font=customtkinter.CTkFont(size=16, weight="normal"), anchor="w")
         self.scaling_label.grid(row=7, column=0, padx=20, pady=(10, 0))
         self.scaling_optionemenu = customtkinter.CTkOptionMenu(self.sidebar_frame, values=["80%", "90%", "100%", "110%", "120%"],
+                                                               font=customtkinter.CTkFont(size=16, weight="normal"),
                                                                command=self.change_scaling_event)
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
 
         # create textbox for One Pizza Problem
-        self.textbox = customtkinter.CTkTextbox(self, width=250)
+        self.textbox = customtkinter.CTkTextbox(self, width=250, font=customtkinter.CTkFont(size=14, weight="normal"))
         self.textbox.grid(row=0, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         # create textbox for output
-        self.output = customtkinter.CTkTextbox(self, width=250)
+        self.output = customtkinter.CTkTextbox(self, width=250, font=customtkinter.CTkFont(size=14, weight="normal"))
         self.output.grid(row=0, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
 
         # create options and progressbar frame
         self.options_frame = customtkinter.CTkFrame(self, width=200, corner_radius=0)
         self.options_frame.grid(row=1, column=1, padx=(20, 0), pady=(20, 0), sticky="nsew")
         self.optionmenu_file = customtkinter.CTkOptionMenu(self.options_frame,
+                                                        font=customtkinter.CTkFont(size=16, weight="normal"),
                                                         command=self.option_file_callback,
                                                         values=["Example", "Basic", "Coarse", "Dificult", "Elaborate"])
         self.optionmenu_file.grid(row=0, column=0, padx=20, pady=(20, 10))
         self.optionmenu_algorithm = customtkinter.CTkOptionMenu(self.options_frame,
+                                                        font=customtkinter.CTkFont(size=16, weight="normal"),
                                                         command=self.option_algorthim_callback,
                                                         values=["Hill Climbing", "Simulated Annealing", "Tabu Search", "Genetic Algorithm"])
         self.optionmenu_algorithm.grid(row=0, column=1, padx=20, pady=(20, 10))
         self.run_button = customtkinter.CTkButton(self.options_frame, text="Run",
-                                                        font=customtkinter.CTkFont(size=14, weight="bold"), 
+                                                        font=customtkinter.CTkFont(size=20, weight="bold"), 
                                                         command=self.run_button_callback)
         self.run_button.grid(row=1, column=1, padx=20, pady=(50, 10), sticky="ew")
-        self.clear_button = customtkinter.CTkButton(self.options_frame, text="Clear Output",
-                                                        font=customtkinter.CTkFont(size=14, weight="bold"), 
-                                                        command=self.clear_output)
-        self.clear_button.grid(row=0, column=2, padx=20, pady=(20, 10), sticky="ew")
+        self.clear_button = customtkinter.CTkButton(self.options_frame, text="Clear All",
+                                                        font=customtkinter.CTkFont(size=16, weight="normal"), 
+                                                        command=self.clear)
+        self.clear_button.grid(row=0, column=2, padx=10, pady=(20, 10), sticky="ew")
         self.progress_bar = customtkinter.CTkProgressBar(self.options_frame)
-        self.progress_bar.grid(row=2, column=1, padx=20, pady=(50, 10), sticky="ew")
+        self.progress_bar.grid(row=2, column=2, padx=10, pady=(50, 10), sticky="ew")
+        self.time_label = customtkinter.CTkLabel(self.options_frame, text="Elapsed Time:", font=customtkinter.CTkFont(size=16, weight="normal"))
+        self.time_label.grid(row=2, column=0, padx=20, pady=(20, 10))
+        self.time = customtkinter.CTkLabel(self.options_frame, text="0.0 s", font=customtkinter.CTkFont(size=20, weight="bold"))
+        self.time.grid(row=2, column=1, padx=20, pady=(20, 10))
         self.solution_frame = customtkinter.CTkFrame(self, width=200, corner_radius=0)
         self.solution_frame.grid(row=1, column=2, padx=(20, 0), pady=(20, 0), sticky="nsew")
-        self.solution_label = customtkinter.CTkLabel(self.solution_frame, text="Solution:", font=customtkinter.CTkFont(size=14, weight="normal"))
-        self.solution_label.grid(row=0, column=0, padx=20, pady=(10, 10), sticky="ew")
         self.solution = customtkinter.CTkTextbox(self.solution_frame, width=300, font=customtkinter.CTkFont(size=14, weight="normal"))
         self.solution.grid(row=0, column=1, padx=20, pady=(10, 10), sticky="ew")
-        self.score_label = customtkinter.CTkLabel(self.solution_frame, text="Score:", font=customtkinter.CTkFont(size=14, weight="normal"))
-        self.score_label.grid(row=1, column=0, padx=20, pady=(10, 10), sticky="ew")
-        self.score = customtkinter.CTkLabel(self.solution_frame, text="The score", font=customtkinter.CTkFont(size=14, weight="normal"))
+        self.score = customtkinter.CTkLabel(self.solution_frame, text="The Score", font=customtkinter.CTkFont(size=26, weight="bold"))
         self.score.grid(row=1, column=1, padx=20, pady=(10, 10), sticky="ew")
 
         self.appearance_mode_optionemenu.set("System")
@@ -107,7 +112,12 @@ class App(customtkinter.CTk):
 
     def run_button_callback(self):
         self.progress_bar.start()
+        start = time.perf_counter()
         solution, score = self.start_algorithm(self.update_solution_and_score, self.insert_output)
+        end = time.perf_counter()
+        # Elapsed time in seconds with 2 decimal places
+        elapsed_time = "{:.2f} s".format(end - start)
+        self.time.configure(text=elapsed_time)
         self.update_solution_and_score(solution, score)
         self.insert_output("Algorithm finished.\n")
         self.progress_bar.stop()
@@ -122,9 +132,12 @@ class App(customtkinter.CTk):
         self.output.insert("end", output) # insert at line 0 character 0
         self.output.update()
     
-    def clear_output(self):
+    def clear(self):
         self.output.delete("0.0", "end")
         self.output.insert("0.0", "Output\n\n")
+        self.solution.delete("0.0", "end")
+        self.solution.insert("0.0", "Solution\n\nThe solution will be shown here.\nIt will be a list of ingredients that should be included in the pizza.\n\n")
+        self.score.configure(text="The Score")
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
