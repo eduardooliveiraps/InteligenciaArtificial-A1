@@ -17,6 +17,6 @@
 | a_an_example.in | 2    |
 | b_basic.in      | 5    |
 | c_coarse.in     | 5    |
-| d_difficult.in  | 1000 |
+| d_difficult.in  | 1775 |
 | e_elaborate.in  | 1000 |
 | Total           |      |

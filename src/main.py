@@ -20,8 +20,12 @@ def set_algorithm(choice):
     if 0 <= choice <= 3:
         chosen_algorithm = choice
 
-def start_algorithm(update_solution_and_score):
+def start_algorithm(update_solution_and_score, insert_output):
     print(f"Running {algorithms[chosen_algorithm]} algorithm...")
+    print(f"Using file: {file_name}")
+    # Insert the output into the output textbox
+    insert_output(f"Running {algorithms[chosen_algorithm]} algorithm...\nUsing file: {file_name}\n\n")
+    # Read the input file
     utils.read_input_file(file_name)
 
     if chosen_algorithm == 0:
@@ -31,7 +35,7 @@ def start_algorithm(update_solution_and_score):
         print ("Simulated Annealing")
         solution, score = utils.simulated_annealing_algorithm(update_solution_and_score)
     elif chosen_algorithm == 2:
-        solution, score = utils.run_tabu_search(update_solution_and_score)
+        solution, score = utils.run_tabu_search(update_solution_and_score, insert_output)
     elif chosen_algorithm == 3:
         solution, score = utils.genetic_algorithm()
     
