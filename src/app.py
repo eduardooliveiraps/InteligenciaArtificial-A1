@@ -6,11 +6,12 @@ customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "gre
 
 
 class App(customtkinter.CTk):
-    def __init__(self, start_algorithm, set_file, set_algorithm, width=1280, heigh=720):
+    def __init__(self, start_algorithm, set_file, set_algorithm, set_parameters, width=1280, heigh=720):
         super().__init__()
         self.start_algorithm = start_algorithm
         self.set_file = set_file
         self.set_algorithm = set_algorithm
+        self.set_parameters = set_parameters
 
         # configure window
         self.title("One Pizza")
@@ -69,6 +70,10 @@ class App(customtkinter.CTk):
                                                         command=self.option_algorthim_callback,
                                                         values=["Hill Climbing", "Simulated Annealing", "Tabu Search", "Genetic Algorithm"])
         self.optionmenu_algorithm.grid(row=0, column=1, padx=20, pady=(20, 10))
+        self.param_button = customtkinter.CTkButton(self.options_frame, text="Parameters",
+                                                        font=customtkinter.CTkFont(size=20, weight="normal"), 
+                                                        command=self.param_button_callback)
+        self.param_button.grid(row=1, column=0, padx=20, pady=(50, 10), sticky="ew")
         self.run_button = customtkinter.CTkButton(self.options_frame, text="Run",
                                                         font=customtkinter.CTkFont(size=20, weight="bold"), 
                                                         command=self.run_button_callback)
@@ -94,7 +99,31 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu.set("100%")
         self.optionmenu_file.set("Select File")
         self.optionmenu_algorithm.set("Select Algorithm")
-        self.textbox.insert("0.0", "One Pizza Problem\n\n" + "You are opening a small pizzeria. In fact, your pizzeria is so small that you decided to offer only one type of pizza.\nNow you need to decide what ingredients to include (peppers? tomatoes?both?).\nEveryone has their own pizza preferences.\nEach of your potential clients has some ingredientsthey like, and maybe some ingredients they dislike.\nEach client will come to your pizzeria if both conditions are true:\n\n  1. all the ingredients they like are on the pizza\n  2. none of the ingredients they dislike are on the pizza.\n\n" + "You want to maximize the number of clients that will come to your pizzeria.\n" + "The problem is to decide what ingredients to include in the pizza.\n\n" + "Instructions\n\n" + "The input file will contain the list of ingredients that each client likes and dislikes.\n\n" + "The solution will contain the list of ingredients that should be included in the pizza.\n\n" + "The score will be the number of clients that will come to your pizzeria.\n\n" + "The output will contain the progress of the algorithm (each iteration).\n\n" + "The elapsed time will be the time it took to run the algorithm.\n\n" + "The clear button will clear the output, solution and score.\n\n" + "The run button will run the algorithm.\n\n" + "The option menu will allow you to select the file and the algorithm.\n\n" + "The appearance mode option menu will allow you to select the appearance mode.\n\n" + "The UI scaling option menu will allow you to select the UI scaling.\n\n")
+        self.textbox.insert("0.0", "One Pizza Problem\n\n" 
+                            + "You are opening a small pizzeria. In fact, your pizzeria is so small that you decided to offer only one type of pizza.\nNow you need to decide what ingredients to include (peppers? tomatoes?both?).\nEveryone has their own pizza preferences.\nEach of your potential clients has some ingredientsthey like, and maybe some ingredients they dislike.\nEach client will come to your pizzeria if both conditions are true:\n\n  1. all the ingredients they like are on the pizza\n  2. none of the ingredients they dislike are on the pizza.\n\n" 
+                            + "You want to maximize the number of clients that will come to your pizzeria.\n" + "The problem is to decide what ingredients to include in the pizza.\n\n" 
+                            + "PLEASE READ THE INSTRUCTIONS FOR FURTHER DETAILS.\n\n"
+                            + "Instructions:\n\n" 
+                            + "Each algorithm has its own parameters.\n\n"
+                            + "Each parameter should be separated by a comma.\n\n"
+                            + "For the Tabu Search, the parameters are:\n\n"
+                            + "  - max_iter: (integer) the maximum number of iterations.\n"
+                            + "  - max_no_improv: (integer) the maximum number of iterations without improvement.\n"
+                            + "  - tabu_tenure: (integer) the tabu tenure (size of the tabu list).\n"
+                            + "  - aspiration: (integer) the aspiration criteris.\n\n"
+                            + "The input file will contain the list of ingredients that each client likes and dislikes.\n\n" 
+                            + "The solution will contain the list of ingredients that should be included in the pizza.\n\n" 
+                            + "The score will be the number of clients that will come to your pizzeria.\n\n" 
+                            + "The output will contain the progress of the algorithm (each iteration).\n\n" 
+                            + "The elapsed time will be the time it took to run the algorithm.\n\n" 
+                            + "The clear button will clear the output, solution and score.\n\n" 
+                            + "The run button will run the algorithm.\n\n" 
+                            + "The option menu will allow you to select the file and the algorithm.\n\n" 
+                            + "The appearance mode option menu will allow you to select the appearance mode.\n\n" 
+                            + "The UI scaling option menu will allow you to select the UI scaling.\n\n"
+                            + "The parameters button will allow you to type in parameters.\n\n"
+                            + "The correct syntax for the parameters is: <parameter_name>=<parameter_value>.\n\n"    
+                            )
         self.output.insert("0.0", "Output\n\n")
         self.solution.insert("0.0", "Solution\n\nThe solution will be shown here.\nIt will be a list of ingredients that should be included in the pizza.\n\n")
         self.progress_bar.configure(mode="indeterminnate")
@@ -109,6 +138,15 @@ class App(customtkinter.CTk):
         print("Selected Algorithm:", choice)
         choice_idx = ["Hill Climbing", "Simulated Annealing", "Tabu Search", "Genetic Algorithm"].index(choice)
         self.set_algorithm(choice=choice_idx)
+
+    def param_button_callback(self):
+        dialog = customtkinter.CTkInputDialog(text="Type in a parameter (view instructions for further details):", title="Paramemters")
+        parameters = dialog.get_input().split(",")  # Split the parameters by comma
+        # remove white spaces
+        parameters = [param.strip() for param in parameters]
+        parameters = {param.split("=")[0]: param.split("=")[1] for param in parameters}  # Create a dictionary from the parameters
+        self.set_parameters(parameters)
+        print("Parameters:", parameters)
 
     def run_button_callback(self):
         self.progress_bar.start()
@@ -147,6 +185,6 @@ class App(customtkinter.CTk):
         customtkinter.set_widget_scaling(new_scaling_float)
 
 
-def run_app(start_algorithm, set_file, set_algorithm):
-    app = App(start_algorithm, set_file, set_algorithm)
+def run_app(start_algorithm, set_file, set_algorithm, set_parameters):
+    app = App(start_algorithm, set_file, set_algorithm, set_parameters)
     app.mainloop()

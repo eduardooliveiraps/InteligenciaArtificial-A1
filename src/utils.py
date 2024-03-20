@@ -1,4 +1,3 @@
-from collections import deque
 import pizza
 import pygad
 import random
@@ -137,12 +136,12 @@ def genetic_algorithm(generations=2000):
 
 
 # Run Tabu Search Algorithm
-def run_tabu_search(update_solution_and_score=None, insert_output=None):
+def run_tabu_search(update_solution_and_score=None, insert_output=None, max_iter=1000, max_no_improv=20, aspiration=1, tenure=15,):
     initial_solution = generate_starting_state(clients)
     # Output the initial solution
     if insert_output:
         insert_output(f"Initial Solution: {initial_solution}\n\n")
-    best_solution, best_score = tabu_search(initial_solution, objective_test, child_pizza_states, aspiration_threshold=1, tabu_tenure=15, update_solution_and_score=update_solution_and_score, insert_output=insert_output)
+    best_solution, best_score = tabu_search(initial_solution, objective_test, child_pizza_states, max_iterations=max_iter, max_no_improv=max_no_improv, tabu_tenure=tenure, aspiration_threshold=aspiration, update_solution_and_score=update_solution_and_score, insert_output=insert_output)
 
     return best_solution, best_score 
 
@@ -163,7 +162,7 @@ def child_pizza_states(state, tabu_list):
     return new_states
 
 # Tabu Search Algorithm
-def tabu_search(initial_solution, objective_function, neighborhood_function, max_iterations=1000, tabu_tenure=10, aspiration_threshold=1, update_solution_and_score=None, insert_output=None):
+def tabu_search(initial_solution, objective_function, neighborhood_function, max_iterations=1000, max_no_improv=20, tabu_tenure=10, aspiration_threshold=1, update_solution_and_score=None, insert_output=None):
     global clients
     # Initialize tabu list
     tabu_list = []
@@ -182,7 +181,7 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
     same_score_iteration = 0
 
     # Tabu search algorithm
-    for i in range(max_iterations):
+    for i in range(int(max_iterations)):
         # Output the current solution and best score
         if insert_output:
             insert_output(f"Iteration {i}: {current_solution}\nScore: {objective_function(current_solution, clients)}\n\n")
@@ -208,7 +207,7 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
         if best_neighbor_score > best_score:
             same_score_iteration = 0
             # Apply aspiration criteria
-            if best_neighbor in tabu_list and best_neighbor_score - best_score > aspiration_threshold:
+            if best_neighbor in tabu_list and best_neighbor_score - best_score > int(aspiration_threshold):
                 if insert_output:
                     insert_output("Aspiration criteria applied!\n\n")
                 current_solution = best_neighbor
@@ -232,15 +231,15 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
             update_solution_and_score(best_solution, best_score)
         
         # Maintain tabu list size
-        if len(tabu_list) > tabu_tenure:
+        if len(tabu_list) > int(tabu_tenure):
             tabu_list.pop(0)
         
         same_score_iteration += 1
 
         # Check termination condition (e.g., no improvement for several iterations)
         # Terminate if the termination condition is met
-        # In this example, we'll terminate if no improvement is observed after 100 iterations
-        if same_score_iteration > 20 and best_neighbor_score == best_score:
+        # In this example, we'll terminate if no improvement is observed after max_no_improv iterations
+        if same_score_iteration > int(max_no_improv) and best_neighbor_score == best_score:
             break
     
     return best_solution, best_score
