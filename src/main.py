@@ -1,6 +1,6 @@
 import utils
-import pizza
 import warnings
+import app
 
 warnings.filterwarnings("ignore", category=UserWarning, module="pygad")
 
@@ -9,79 +9,53 @@ warnings.filterwarnings("ignore", category=UserWarning, module="pygad")
 algorithms = ["Hill Climbing", "Simulated Annealing", "Tabu Search", "Genetic Algorithm"]
 # List of possible input files
 files = ["a_an_example.in.txt", "b_basic.in.txt", "c_coarse.in.txt", "d_difficult.in.txt", "e_elaborate.in.txt"]
+# List of possible parameters
+parameters = {"max_iter": 1000, "max_no_improv": 20, "aspiration": 1, "tenure": 20}
 
-# Function to display the title of the program
-def display_title():
-    print("******************************************")
-    print("*    One Pizza - Optimization Problem    *")
-    print("******************************************\n")
+def set_file(choice):
+    global file_name
+    if 0 <= choice <= 4:
+        file_name = f"../data/{files[choice]}"
 
+def set_algorithm(choice):
+    global chosen_algorithm
+    if 0 <= choice <= 3:
+        chosen_algorithm = choice
 
-# Function to select a file from the list of possible input files
-def select_file():
-    print("Select a file:")
-    print("     1. a_an_example.in.txt")
-    print("     2. b_basic.in.txt")
-    print("     3. c_coarse.in.txt")
-    print("     4. d_difficult.in.txt")
-    print("     5. e_elaborate.in.txt")
-    
-    while True:
-        try:
-            choice = int(input("Enter your choice: "))
-            if 1 <= choice <= 5:
-                return f"../data/{files[choice - 1]}"
-            else:
-                print("Invalid choice. Please enter a number between 1 and 5")
-        except ValueError:
-            print("Invalid choice. Please enter a number.")
+def set_parameters(chosen_parameters):
+    global parameters
+    # Update only the parameters that were changed, keep the default for the rest
+    parameters.update(chosen_parameters)
 
 
-# Function to select an algorithm from the list of possible algorithms
-def select_algorithm():
-    print("Select an algorithm:")
-    for i, algorithm in enumerate(algorithms, 1):
-        print(f"{i}. {algorithm}")
-    
-    while True:
-        try:
-            choice = int(input("Enter your choice: "))
-            if 1 <= choice <= len(algorithms):
-                return choice - 1
-            else:
-                print("Invalid choice. Please enter a number between 1 and", len(algorithms))
-        except ValueError:
-            print("Invalid choice. Please enter a number.")
-
-    
-# Main function
-def main():
-    display_title()
-
-    file_name = select_file()
-    
+def start_algorithm(update_solution_and_score, insert_output):
+    print(f"Running {algorithms[chosen_algorithm]} algorithm...")
+    print(f"Using file: {file_name}")
+    print(f"Using parameteres: {parameters}")
+    # Output the chosen algorithm and file being used
+    insert_output(f"Running {algorithms[chosen_algorithm]} algorithm...\nUsing file: {file_name}\nUsing parameteres: {parameters}\n\n")
+    # Read the input file
     utils.read_input_file(file_name)
 
-    solution, score = utils.genetic_algorithm2(utils.clients, utils.unique_ingredients) # Get the solution and score from the genetic algorithm
+    if chosen_algorithm == 0:
+        solution, score = utils.hill_climbing_algorithm(update_solution_and_score, insert_output)
+    elif chosen_algorithm == 1:
+        solution, score = utils.simulated_annealing_algorithm(update_solution_and_score, insert_output)
+    elif chosen_algorithm == 2:
+        solution, score = utils.run_tabu_search(update_solution_and_score, insert_output,
+                                                max_iter=parameters["max_iter"], 
+                                                max_no_improv=parameters["max_no_improv"],
+                                                aspiration=parameters["aspiration"], 
+                                                tenure=parameters["tenure"])
+    elif chosen_algorithm == 3:
+        solution, score = utils.genetic_algorithm()
     
-    # Print the solution and score
-    ingredients = ' '.join(solution)
-    print(f'{len(solution)} {ingredients}')
-    print(f"Score: {score}") 
+    return solution, score
     
-    #algorithm_choice = select_algorithm()
-    
-    #print(f"Running {algorithms[algorithm_choice]} algorithm...")
 
-    # Here we would call the selected algorithm function
+# Main function
+def main():
+    app.run_app(start_algorithm=start_algorithm, set_file=set_file, set_algorithm=set_algorithm, set_parameters=set_parameters)
 
-    # For now, we will just run the Breadth First Search algorithm
-    #goal = utils.breadth_first_search(pizza.PizzaState(), 
-                           #utils.goal_pizza_state, 
-                            #utils.child_pizza_states)
-    
-    # Print the goal state and the solution
-    #print(goal.state)
-    #utils.print_solution(goal)
 
 main() 
