@@ -52,42 +52,6 @@ def clear_data():
     solution = pizza.PizzaState()
     score = 0
 
-# Operators for the pizza problem
-def child_pizza_states(state):
-    new_states = []
-    for ingredient in unique_ingredients:
-        add_state = pizza.add_ingredient(state, ingredient)
-        if add_state:
-            new_states.append(add_state)
-        rem_state = pizza.remove_ingredient(state, ingredient)
-        if rem_state:
-            new_states.append(rem_state)
-    return new_states
-
-# Objective function for the pizza problem
-def objective_test(state, clients):
-    satisfied_clients = 0
-    for client in clients:
-        if all(ingredient in state.ingredients for ingredient in client.likes) and \
-                not any(ingredient in state.ingredients for ingredient in client.dislikes):
-            satisfied_clients += 1
-    return satisfied_clients
-
-# Goal State Function
-def goal_pizza_state(state):
-    return pizza.objective_test(state, clients) == 2
-
-# Print the solution found
-def print_solution(node):
-    path = []
-    while node:
-        path.append(node.state)
-        node = node.parent
-    path.reverse()
-    for state in path:
-        print(state)
-    return
-
 ##############
 # ALGORITHMS #
 ##############
@@ -202,17 +166,29 @@ def select_parents(population, scores):
         parent_indices = random.choices(range(len(population)), weights=probabilities, k=2)
     return population[parent_indices[0]], population[parent_indices[1]]
 
-def genetic_algorithm2(clients, unique_ingredients, population_size=20, generations=50, mutation_rate=0.2):
+def genetic_algorithm2(clients, unique_ingredients, population_size=20, generations=50, mutation_rate=0.2, update_solution_and_score=None, insert_output=None):
     num_ingredients = len(unique_ingredients)
     population = create_initial_population(population_size, num_ingredients)
     
-    for _ in range(generations):
+    best_individual_per_generation = []  # Lista para manter o melhor indivíduo de cada geração
+    
+    for generation in range(generations):
         unique_ingredients = list(unique_ingredients)
         scores = [evaluate2([unique_ingredients[i] for i, gene in enumerate(solution) if gene], clients) for solution in population]
         best_solution_idx = scores.index(max(scores))
         best_solution = [unique_ingredients[i] for i, gene in enumerate(population[best_solution_idx]) if gene]
         
-        print("Generation:", _ + 1, "Best solution:", best_solution, "Score:", max(scores))
+        # Adicione o melhor indivíduo desta geração ao registro
+        best_individual_per_generation.append((best_solution, max(scores)))
+        
+        # Chame a função para atualizar o melhor indivíduo e sua pontuação
+        if update_solution_and_score:
+            update_solution_and_score(best_solution, max(scores))
+        
+        output_message = f"Generation {generation + 1}: {best_solution}\nScore: {max(scores)}\n\n"
+
+        if insert_output:
+            insert_output(output_message)
         
         new_population = [population[best_solution_idx]]
         
@@ -228,7 +204,7 @@ def genetic_algorithm2(clients, unique_ingredients, population_size=20, generati
     best_solution = [unique_ingredients[i] for i, gene in enumerate(population[best_solution_idx]) if gene]
     best_score = max(scores)
     
-    return best_solution, best_score
+    return best_solution, best_score, best_individual_per_generation
 
 
 ###############

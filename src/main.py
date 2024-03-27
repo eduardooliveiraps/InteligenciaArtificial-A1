@@ -48,7 +48,10 @@ def start_algorithm(update_solution_and_score, insert_output):
                                                 aspiration=parameters["aspiration"], 
                                                 tenure=parameters["tenure"])
     elif chosen_algorithm == 3:
-        solution, score = utils.genetic_algorithm()
+        solution, score, _ = utils.genetic_algorithm2(utils.clients, utils.unique_ingredients, 
+                                                       update_solution_and_score=update_solution_and_score,
+                                                       insert_output=insert_output)
+
     
     return solution, score
     
