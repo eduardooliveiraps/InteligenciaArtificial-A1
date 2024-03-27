@@ -1,6 +1,7 @@
 from collections import deque
 import pizza
 import pygad
+import random
 
 # Definition of the Client class that contaains the list of ingredients the client likes and dislikes
 class Client:
@@ -164,3 +165,69 @@ def genetic_algorithm(generations=2000):
 
         return solution, score
     
+
+# Genetic Algorithm without using the pygad library
+
+def evaluate2(pizza, clients):
+    score = 0
+    for client in clients:
+        if client.likes.issubset(pizza) and not client.dislikes.intersection(pizza):
+            score += 1
+    return score
+
+def create_initial_population(population_size, num_ingredients):
+    population = []
+    for _ in range(population_size):
+        pizza = [random.randint(0, 1) for _ in range(num_ingredients)]
+        population.append(pizza)
+    return population
+
+def crossover(parent1, parent2):
+    crossover_point = random.randint(0, len(parent1) - 1)
+    child = parent1[:crossover_point] + parent2[crossover_point:]
+    return child
+
+def mutate(solution, mutation_rate):
+    mutated_solution = []
+    for gene in solution:
+        if random.random() < mutation_rate:
+            mutated_solution.append(1 - gene)
+        else:
+            mutated_solution.append(gene)
+    return mutated_solution
+
+def select_parents(population, scores):
+    total_score = sum(scores)
+    probabilities = [score / total_score for score in scores]
+    parent_indices = random.choices(range(len(population)), weights=probabilities, k=2)
+    while parent_indices[0] == parent_indices[1]:  # Ensure unique parents
+        parent_indices = random.choices(range(len(population)), weights=probabilities, k=2)
+    return population[parent_indices[0]], population[parent_indices[1]]
+
+def genetic_algorithm2(clients, unique_ingredients, population_size=20, generations=50, mutation_rate=0.2):
+    num_ingredients = len(unique_ingredients)
+    population = create_initial_population(population_size, num_ingredients)
+    
+    for _ in range(generations):
+        unique_ingredients = list(unique_ingredients)
+        scores = [evaluate2([unique_ingredients[i] for i, gene in enumerate(solution) if gene], clients) for solution in population]
+        best_solution_idx = scores.index(max(scores))
+        best_solution = [unique_ingredients[i] for i, gene in enumerate(population[best_solution_idx]) if gene]
+        
+        print("Generation:", _ + 1, "Best solution:", best_solution, "Score:", max(scores))
+        
+        new_population = [population[best_solution_idx]]
+        
+        while len(new_population) < population_size:
+            parent1, parent2 = select_parents(population, scores)
+            child = crossover(parent1, parent2)
+            child = mutate(child, mutation_rate)
+            new_population.append(child)
+        
+        population = new_population
+    
+    best_solution_idx = scores.index(max(scores))
+    best_solution = [unique_ingredients[i] for i, gene in enumerate(population[best_solution_idx]) if gene]
+    best_score = max(scores)
+    
+    return best_solution, best_score

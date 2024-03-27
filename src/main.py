@@ -62,7 +62,7 @@ def main():
     
     utils.read_input_file(file_name)
 
-    solution, score = utils.genetic_algorithm()  # Get the solution and score from the genetic algorithm
+    solution, score = utils.genetic_algorithm2(utils.clients, utils.unique_ingredients) # Get the solution and score from the genetic algorithm
     
     # Print the solution and score
     ingredients = ' '.join(solution)
