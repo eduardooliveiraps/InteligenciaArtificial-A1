@@ -10,7 +10,7 @@ algorithms = ["Hill Climbing", "Simulated Annealing", "Tabu Search", "Genetic Al
 # List of possible input files
 files = ["a_an_example.in.txt", "b_basic.in.txt", "c_coarse.in.txt", "d_difficult.in.txt", "e_elaborate.in.txt"]
 # List of possible parameters
-parameters = {"max_iter": 1000, "max_no_improv": 20, "aspiration": 1, "tenure": 20, "temperature": 100, "cooling_rate": 0.001}
+parameters = {"temperature": 100, "cooling_rate": 0.001, "max_iter": 1000, "max_no_improv": 20, "aspiration": 1, "tenure": 20, "population_size": 20, "generations": 50, "mutation_rate": 0.2}
 
 def set_file(choice):
     global file_name
@@ -51,6 +51,9 @@ def start_algorithm(update_solution_and_score, insert_output):
                                                 tenure=parameters["tenure"])
     elif chosen_algorithm == 3:
         solution, score, _ = utils.genetic_algorithm2(utils.clients, utils.unique_ingredients, 
+                                                        population_size=parameters["population_size"],
+                                                        generations=parameters["generations"],
+                                                        mutation_rate=parameters["mutation_rate"],
                                                        update_solution_and_score=update_solution_and_score,
                                                        insert_output=insert_output)
 

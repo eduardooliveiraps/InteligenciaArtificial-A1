@@ -1,0 +1,2 @@
+pygad==3.3.1
+customtkinter==5.2.2
