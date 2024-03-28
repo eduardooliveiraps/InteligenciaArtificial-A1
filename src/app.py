@@ -112,7 +112,7 @@ class App(customtkinter.CTk):
                             + "For the Tabu Search, the parameters are:\n\n"
                             + "  - max_iter: (integer) the maximum number of iterations.\n"
                             + "  - max_no_improv: (integer) the maximum number of iterations without improvement.\n"
-                            + "  - tabu_tenure: (integer) the tabu tenure (size of the tabu list).\n"
+                            + "  - tenure: (integer) the tabu tenure (size of the tabu list).\n"
                             + "  - aspiration: (integer) the aspiration criteris.\n\n"
                             + "For the Genetic Algorithm, the parameters are:\n\n"
                             + "  - population_size: (integer) the size of the population.\n"
