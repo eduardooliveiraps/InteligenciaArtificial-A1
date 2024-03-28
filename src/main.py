@@ -10,7 +10,7 @@ algorithms = ["Hill Climbing", "Simulated Annealing", "Tabu Search", "Genetic Al
 # List of possible input files
 files = ["a_an_example.in.txt", "b_basic.in.txt", "c_coarse.in.txt", "d_difficult.in.txt", "e_elaborate.in.txt"]
 # List of possible parameters
-parameters = {"max_iter": 1000, "max_no_improv": 20, "aspiration": 1, "tenure": 20}
+parameters = {"max_iter": 1000, "max_no_improv": 20, "aspiration": 1, "tenure": 20, "temperature": 100, "cooling_rate": 0.001}
 
 def set_file(choice):
     global file_name
@@ -40,7 +40,9 @@ def start_algorithm(update_solution_and_score, insert_output):
     if chosen_algorithm == 0:
         solution, score = utils.hill_climbing_algorithm(update_solution_and_score, insert_output)
     elif chosen_algorithm == 1:
-        solution, score = utils.simulated_annealing_algorithm(update_solution_and_score, insert_output)
+        solution, score = utils.simulated_annealing_algorithm(update_solution_and_score, insert_output, 
+                                                              temperature=parameters["temperature"], 
+                                                              cooling_rate=parameters["cooling_rate"])
     elif chosen_algorithm == 2:
         solution, score = utils.run_tabu_search(update_solution_and_score, insert_output,
                                                 max_iter=parameters["max_iter"], 

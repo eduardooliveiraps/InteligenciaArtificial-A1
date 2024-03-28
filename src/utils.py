@@ -423,10 +423,10 @@ def generate_neighbors(solution):
 def acceptance_probability_function(current_score, new_score, temperature):
     if new_score > current_score:
         return 1
-    return pow(math.e, (new_score - current_score) / temperature) / 1.75
+    return pow(math.e, (new_score - current_score) / temperature) / 1.5
 
 # Simulated Annealing Algorithm
-def simulated_annealing_algorithm(update_solution_and_score=None, insert_output=None):
+def simulated_annealing_algorithm(update_solution_and_score=None, insert_output=None, temperature=100, cooling_rate=0.001):
     global clients, unique_ingredients, score
 
     current_solution = generate_starting_state(clients)
@@ -442,9 +442,6 @@ def simulated_annealing_algorithm(update_solution_and_score=None, insert_output=
     # Set the current solution and score
     if update_solution_and_score:
         update_solution_and_score(best_solution, best_score)
-
-    temperature = 100
-    cooling_rate = 0.001
 
     counter = 0  # initialize counter
 
