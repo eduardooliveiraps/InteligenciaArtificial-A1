@@ -167,6 +167,10 @@ def select_parents(population, scores):
     return population[parent_indices[0]], population[parent_indices[1]]
 
 def genetic_algorithm2(clients, unique_ingredients, population_size=20, generations=50, mutation_rate=0.2, update_solution_and_score=None, insert_output=None):
+    population_size = int(population_size)
+    generations = int(generations)
+    mutation_rate = float(mutation_rate)
+    
     num_ingredients = len(unique_ingredients)
     population = create_initial_population(population_size, num_ingredients)
     
@@ -243,6 +247,11 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
     global clients
     # Initialize tabu list
     tabu_list = []
+
+    max_iterations = int(max_iterations)
+    max_no_improv = int(max_no_improv)
+    tabu_tenure = int(tabu_tenure)
+    aspiration_threshold = int(aspiration_threshold)
     
     # Initialize current solution
     current_solution = initial_solution
@@ -258,7 +267,7 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
     same_score_iteration = 0
 
     # Tabu search algorithm
-    for i in range(int(max_iterations)):
+    for i in range(max_iterations):
         # Output the current solution and best score
         if insert_output:
             insert_output(f"Iteration {i}: {current_solution}\nScore: {objective_function(current_solution, clients)}\n\n")
@@ -284,7 +293,7 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
         if best_neighbor_score > best_score:
             same_score_iteration = 0
             # Apply aspiration criteria
-            if best_neighbor in tabu_list and best_neighbor_score - best_score > int(aspiration_threshold):
+            if best_neighbor in tabu_list and best_neighbor_score - best_score > aspiration_threshold:
                 if insert_output:
                     insert_output("Aspiration criteria applied!\n\n")
                 current_solution = best_neighbor
@@ -308,7 +317,7 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
             update_solution_and_score(best_solution, best_score)
         
         # Maintain tabu list size
-        if len(tabu_list) > int(tabu_tenure):
+        if len(tabu_list) > tabu_tenure:
             tabu_list.pop(0)
         
         same_score_iteration += 1
@@ -316,7 +325,7 @@ def tabu_search(initial_solution, objective_function, neighborhood_function, max
         # Check termination condition (e.g., no improvement for several iterations)
         # Terminate if the termination condition is met
         # In this example, we'll terminate if no improvement is observed after max_no_improv iterations
-        if same_score_iteration > int(max_no_improv) and best_neighbor_score == best_score:
+        if same_score_iteration > max_no_improv and best_neighbor_score == best_score:
             break
     
     return best_solution, best_score
@@ -431,6 +440,9 @@ def simulated_annealing_algorithm(update_solution_and_score=None, insert_output=
 
     current_solution = generate_starting_state(clients)
     current_score = objective_test(current_solution, clients)
+
+    temperature = float(temperature)
+    cooling_rate = float(cooling_rate)
 
     # Output the initial solution
     if insert_output:
