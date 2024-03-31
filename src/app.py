@@ -183,6 +183,7 @@ class App(customtkinter.CTk):
         self.solution.delete("0.0", "end")
         self.solution.insert("0.0", "Solution\n\nThe solution will be shown here.\nIt will be a list of ingredients that should be included in the pizza.\n\n")
         self.score.configure(text="The Score")
+        self.time.configure(text="0.0 s")
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
