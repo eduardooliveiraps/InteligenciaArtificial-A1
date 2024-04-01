@@ -87,7 +87,7 @@ def objective_test(state, clients):
 ###########
 
 # Evaluate the fitness of a pizza
-def evaluate2(pizza, clients):
+def evaluate(pizza, clients):
     score = 0
     for client in clients:
         if client.likes.issubset(pizza) and not client.dislikes.intersection(pizza):
@@ -128,7 +128,7 @@ def select_parents(population, scores):
     return population[parent_indices[0]], population[parent_indices[1]]
 
 # Genetic Algorithm
-def genetic_algorithm2(clients, unique_ingredients, population_size=20, generations=50, mutation_rate=0.2, update_solution_and_score=None, insert_output=None):
+def genetic_algorithm(clients, unique_ingredients, population_size=20, generations=50, mutation_rate=0.2, update_solution_and_score=None, insert_output=None):
     population_size = int(population_size)
     generations = int(generations)
     mutation_rate = float(mutation_rate)
@@ -140,7 +140,7 @@ def genetic_algorithm2(clients, unique_ingredients, population_size=20, generati
     
     for generation in range(generations):
         unique_ingredients = list(unique_ingredients)
-        scores = [evaluate2([unique_ingredients[i] for i, gene in enumerate(solution) if gene], clients) for solution in population]
+        scores = [evaluate([unique_ingredients[i] for i, gene in enumerate(solution) if gene], clients) for solution in population]
         best_solution_idx = scores.index(max(scores))
         best_solution = [unique_ingredients[i] for i, gene in enumerate(population[best_solution_idx]) if gene]
         

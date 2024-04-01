@@ -50,7 +50,7 @@ def start_algorithm(update_solution_and_score, insert_output):
                                                 aspiration=parameters["aspiration"], 
                                                 tenure=parameters["tenure"])
     elif chosen_algorithm == 3:
-        solution, score, _ = utils.genetic_algorithm2(utils.clients, utils.unique_ingredients, 
+        solution, score, _ = utils.genetic_algorithm(utils.clients, utils.unique_ingredients, 
                                                         population_size=parameters["population_size"],
                                                         generations=parameters["generations"],
                                                         mutation_rate=parameters["mutation_rate"],
