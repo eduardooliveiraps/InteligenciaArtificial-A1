@@ -1,8 +1,5 @@
 import utils
-import warnings
 import app
-
-warnings.filterwarnings("ignore", category=UserWarning, module="pygad")
 
 
 # List of possible algorithms

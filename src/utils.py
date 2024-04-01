@@ -1,5 +1,4 @@
 import pizza
-import pygad
 import random
 import math
 from collections import deque
@@ -86,49 +85,6 @@ def objective_test(state, clients):
 ###########
 # Genetic #
 ###########
-
-
-# Evaluate the fitness of a pizza
-def evaluate(pizza: set[str]) -> int:
-    global clients
-    result = 0
-    for c in clients:
-        if c.likes & pizza == c.likes and c.dislikes & pizza == set():
-            result += 1
-    return result
-
-# Genetic Algorithm
-def genetic_algorithm(generations=2000):
-        global clients, unique_ingredients, score, solution
-
-        ingredients_list = sorted(list(unique_ingredients))
-
-        def fitness_func(ga_instance, solution, solution_idx):
-            pizza = set([ingredients_list[k] for (k,v) in enumerate(solution) if v == 1])
-            return evaluate(pizza)
-
-        ga_instance = pygad.GA(
-            num_generations=generations,
-            num_parents_mating=2,
-            sol_per_pop=3,
-            num_genes=len(ingredients_list),
-            fitness_func=fitness_func,
-            init_range_low=0,
-            init_range_high=2,
-            random_mutation_min_val=0,
-            random_mutation_max_val=2,
-            mutation_by_replacement=True,
-            gene_type=int)
-
-        ga_instance.run()
-
-        solution, solution_fitness, solution_idx = ga_instance.best_solution()
-        solution = set([ingredients_list[k] for (k,v) in enumerate(solution) if v == 1])
-        score = solution_fitness
-
-        return solution, score
-
-# Genetic Algorithm without using the pygad library
 
 # Evaluate the fitness of a pizza
 def evaluate2(pizza, clients):
