@@ -130,6 +130,7 @@ def genetic_algorithm(generations=2000):
 
 # Genetic Algorithm without using the pygad library
 
+# Evaluate the fitness of a pizza
 def evaluate2(pizza, clients):
     score = 0
     for client in clients:
@@ -137,6 +138,7 @@ def evaluate2(pizza, clients):
             score += 1
     return score
 
+# Create the initial population
 def create_initial_population(population_size, num_ingredients):
     population = []
     for _ in range(population_size):
@@ -144,11 +146,13 @@ def create_initial_population(population_size, num_ingredients):
         population.append(pizza)
     return population
 
+# Crossover function that combines two parents to create a child
 def crossover(parent1, parent2):
     crossover_point = random.randint(0, len(parent1) - 1)
     child = parent1[:crossover_point] + parent2[crossover_point:]
     return child
 
+# Mutation function that randomly flips some genes in the solution
 def mutate(solution, mutation_rate):
     mutated_solution = []
     for gene in solution:
@@ -158,6 +162,7 @@ def mutate(solution, mutation_rate):
             mutated_solution.append(gene)
     return mutated_solution
 
+# Select parents based on their fitness scores
 def select_parents(population, scores):
     total_score = sum(scores)
     probabilities = [score / total_score for score in scores]
@@ -166,6 +171,7 @@ def select_parents(population, scores):
         parent_indices = random.choices(range(len(population)), weights=probabilities, k=2)
     return population[parent_indices[0]], population[parent_indices[1]]
 
+# Genetic Algorithm
 def genetic_algorithm2(clients, unique_ingredients, population_size=20, generations=50, mutation_rate=0.2, update_solution_and_score=None, insert_output=None):
     population_size = int(population_size)
     generations = int(generations)
@@ -174,7 +180,7 @@ def genetic_algorithm2(clients, unique_ingredients, population_size=20, generati
     num_ingredients = len(unique_ingredients)
     population = create_initial_population(population_size, num_ingredients)
     
-    best_individual_per_generation = []  # Lista para manter o melhor indivíduo de cada geração
+    best_individual_per_generation = []  # List to store the best individual per generation
     
     for generation in range(generations):
         unique_ingredients = list(unique_ingredients)
@@ -182,10 +188,10 @@ def genetic_algorithm2(clients, unique_ingredients, population_size=20, generati
         best_solution_idx = scores.index(max(scores))
         best_solution = [unique_ingredients[i] for i, gene in enumerate(population[best_solution_idx]) if gene]
         
-        # Adicione o melhor indivíduo desta geração ao registro
+        # Add the best individual of the current generation to the list
         best_individual_per_generation.append((best_solution, max(scores)))
         
-        # Chame a função para atualizar o melhor indivíduo e sua pontuação
+        # Call the update_solution_and_score function if provided
         if update_solution_and_score:
             update_solution_and_score(best_solution, max(scores))
         
