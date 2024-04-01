@@ -36,3 +36,5 @@ If you don't have python installed on your system, please install it [here](http
 
 
 That's it! You have successfully run our app. Enjoy!
+
+[Presentation](/docs/presentation.pdf)
