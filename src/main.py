@@ -12,22 +12,25 @@ files = ["a_an_example.in.txt", "b_basic.in.txt", "c_coarse.in.txt", "d_difficul
 # List of possible parameters
 parameters = {"temperature": 100, "cooling_rate": 0.001, "max_iter": 1000, "max_no_improv": 20, "aspiration": 1, "tenure": 20, "population_size": 20, "generations": 50, "mutation_rate": 0.2}
 
+# Set the file to be used
 def set_file(choice):
     global file_name
     if 0 <= choice <= 4:
         file_name = f"../data/{files[choice]}"
 
+# Set the algorithm to be used
 def set_algorithm(choice):
     global chosen_algorithm
     if 0 <= choice <= 3:
         chosen_algorithm = choice
 
+# Set the parameters to be used
 def set_parameters(chosen_parameters):
     global parameters
     # Update only the parameters that were changed, keep the default for the rest
     parameters.update(chosen_parameters)
 
-
+# Start the chosen algorithm
 def start_algorithm(update_solution_and_score, insert_output):
     print(f"Running {algorithms[chosen_algorithm]} algorithm...")
     print(f"Using file: {file_name}")

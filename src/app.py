@@ -136,16 +136,21 @@ class App(customtkinter.CTk):
         self.progress_bar.configure(mode="indeterminnate")
         self.progress_bar.start()
 
+    ### Event Handlers ###
+        
+    # Set the file to be used
     def option_file_callback(self, choice):
         print("Selected File:", choice)
         choice_idx = ["Example", "Basic", "Coarse", "Dificult", "Elaborate"].index(choice)
         self.set_file(choice=choice_idx)
 
+    # Set the algorithm to be used
     def option_algorthim_callback(self, choice):
         print("Selected Algorithm:", choice)
         choice_idx = ["Hill Climbing", "Simulated Annealing", "Tabu Search", "Genetic Algorithm"].index(choice)
         self.set_algorithm(choice=choice_idx)
 
+    # Get the parameters from the user
     def param_button_callback(self):
         dialog = customtkinter.CTkInputDialog(text="Type in a parameter (view instructions for further details):", title="Paramemters")
         parameters = dialog.get_input().split(",")  # Split the parameters by comma
@@ -155,6 +160,7 @@ class App(customtkinter.CTk):
         self.set_parameters(parameters)
         print("Parameters:", parameters)
 
+    # Run the algorithm
     def run_button_callback(self):
         self.progress_bar.start()
         start = time.perf_counter()
@@ -167,16 +173,19 @@ class App(customtkinter.CTk):
         self.insert_output("Algorithm finished.\n")
         self.progress_bar.stop()
 
+    # Update the displayed solution and score
     def update_solution_and_score(self, solution, score):
         self.solution.delete("0.0", "end") # delete all text
         self.solution.insert("0.0", solution) # insert at line 0 character 0
         self.score.configure(text=score)
         self.solution_frame.update()
 
+    # Insert output to the output textbox
     def insert_output(self, output):
         self.output.insert("end", output) # insert at line 0 character 0
         self.output.update()
     
+    # Clear all textboxes
     def clear(self):
         self.output.delete("0.0", "end")
         self.output.insert("0.0", "Output\n\n")
@@ -185,9 +194,11 @@ class App(customtkinter.CTk):
         self.score.configure(text="The Score")
         self.time.configure(text="0.0 s")
 
+    # Change the appearance mode
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
 
+    # Change the UI scaling
     def change_scaling_event(self, new_scaling: str):
         new_scaling_float = int(new_scaling.replace("%", "")) / 100
         customtkinter.set_widget_scaling(new_scaling_float)
