@@ -105,6 +105,8 @@ class App(customtkinter.CTk):
                             + "PLEASE READ THE INSTRUCTIONS FOR FURTHER DETAILS.\n\n"
                             + "Instructions:\n\n" 
                             + "Each algorithm has its own parameters.\n\n"
+                            + "The correct syntax for the parameters is: <parameter_name>=<parameter_value>.\n\n"
+                            + "For example, if you want to set the temperature to 100 and the cooling rate to 0.001, you should type:\n     \"temperature=100, cooling_rate=0.001\"\n\n"   
                             + "Each parameter should be separated by a comma.\n\n"
                             + "For the Simulated Annealing, the parameters are:\n\n"
                             + "  - temperature: (float) the initial temperature.\n"
@@ -129,7 +131,6 @@ class App(customtkinter.CTk):
                             + "The appearance mode option menu will allow you to select the appearance mode.\n\n" 
                             + "The UI scaling option menu will allow you to select the UI scaling.\n\n"
                             + "The parameters button will allow you to type in parameters.\n\n"
-                            + "The correct syntax for the parameters is: <parameter_name>=<parameter_value>.\n\n"    
                             )
         self.output.insert("0.0", "Output\n\n")
         self.solution.insert("0.0", "Solution\n\nThe solution will be shown here.\nIt will be a list of ingredients that should be included in the pizza.\n\n")
